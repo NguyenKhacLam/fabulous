@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">fabulous</string>
+    <string name="open_navigation">Open Navigation</string>
+    <string name="close_navigation">Close Navigation</string>
+    <string name="home">Home</string>
+    <string name="journal">Journal</string>
+    <string name="statistic">Statistic</string>
+</resources>

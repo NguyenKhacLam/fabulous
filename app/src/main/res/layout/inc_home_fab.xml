@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fabHomeMenu"
+        app:menu_colorNormal="@color/colorPrimaryDark"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="10dp"
+        app:menu_showShadow="true"
+        app:menu_fab_label=""
+        app:menu_openDirection="up"
+        app:menu_backgroundColor="@android:color/transparent">
+        <com.github.clans.fab.FloatingActionButton
+            android:src="@drawable/ic_to_do_list"
+            android:id="@+id/fabCreateTask"
+            app:fab_label="Create new task"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_size="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:src="@drawable/ic_tea_cup"
+            android:id="@+id/fabCreateNewHabit"
+            app:fab_colorNormal="@color/colorPrimaryDark"
+            app:fab_label="Create habit"
+            app:fab_size="mini"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </com.github.clans.fab.FloatingActionMenu>
+
+
+    
+</RelativeLayout>
