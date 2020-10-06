@@ -9,9 +9,10 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.user.statistic.StatisticActivity"></activity>
-        <activity android:name=".ui.user.journal.JournalActivity" />
-        <activity android:name=".ui.user.home.HomeActivity" />
+        <activity android:name=".ui.user.ProfileActivity"></activity>
+        <activity android:name=".ui.statistic.StatisticActivity" />
+        <activity android:name=".ui.journal.JournalActivity" />
+        <activity android:name=".ui.home.HomeActivity" />
         <activity android:name=".ui.user.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

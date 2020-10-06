@@ -1,4 +1,4 @@
-package com.project.fabulous.ui.user.home;
+package com.project.fabulous.ui.home;
 
 import android.os.Bundle;
 import android.os.Handler;

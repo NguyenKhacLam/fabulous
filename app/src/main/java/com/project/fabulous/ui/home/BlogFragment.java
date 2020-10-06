@@ -1,4 +1,4 @@
-package com.project.fabulous.ui.user.home;
+package com.project.fabulous.ui.home;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.project.fabulous.R;
 
-public class SettingFragment extends Fragment {
+public class BlogFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

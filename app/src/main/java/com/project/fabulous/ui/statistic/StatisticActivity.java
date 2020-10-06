@@ -1,4 +1,4 @@
-package com.project.fabulous.ui.user.statistic;
+package com.project.fabulous.ui.statistic;
 
 import androidx.appcompat.app.AppCompatActivity;
 

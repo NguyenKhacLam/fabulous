@@ -1,4 +1,4 @@
-package com.project.fabulous.ui.user.home;
+package com.project.fabulous.ui.home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,8 +17,9 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.project.fabulous.R;
-import com.project.fabulous.ui.user.journal.JournalActivity;
-import com.project.fabulous.ui.user.statistic.StatisticActivity;
+import com.project.fabulous.ui.journal.JournalActivity;
+import com.project.fabulous.ui.statistic.StatisticActivity;
+import com.project.fabulous.ui.user.ProfileActivity;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawerLayout;
@@ -29,7 +30,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     // Fragment
     private DashboardFragment dashboardFragment = new DashboardFragment();
-    private SettingFragment settingFragment = new SettingFragment();
+    private BlogFragment blogFragment = new BlogFragment();
     private AboutAppFragment aboutAppFragment = new AboutAppFragment();
 
     @Override
@@ -76,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.userSetting:
-                Toast.makeText(this, "User", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, ProfileActivity.class));
                 break;
         }
         return true;
@@ -86,13 +87,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return dashboardFragment;
     }
 
-    public SettingFragment getSettingFragment() {
-        return settingFragment;
+    public BlogFragment getBlogFragment() {
+        return blogFragment;
     }
 
     public AboutAppFragment getAboutAppFragment() {
         return aboutAppFragment;
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -100,8 +102,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.navDashboard:
                 showFragment(dashboardFragment);
                 break;
-            case R.id.navSettings:
-                showFragment(settingFragment);
+            case R.id.navBlog:
+                showFragment(blogFragment);
                 break;
             case R.id.navAboutApp:
                 showFragment(aboutAppFragment);
@@ -115,6 +117,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.navStatistic:
                 startActivity(new Intent(this, StatisticActivity.class));
                 break;
+
         }
         return false;
     }

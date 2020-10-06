@@ -1,4 +1,4 @@
-package com.project.fabulous.ui.user.journal;
+package com.project.fabulous.ui.journal;
 
 import androidx.appcompat.app.AppCompatActivity;
 

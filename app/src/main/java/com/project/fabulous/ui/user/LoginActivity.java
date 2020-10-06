@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.project.fabulous.R;
-import com.project.fabulous.ui.user.home.HomeActivity;
+import com.project.fabulous.ui.home.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private ImageView loginBtn;
