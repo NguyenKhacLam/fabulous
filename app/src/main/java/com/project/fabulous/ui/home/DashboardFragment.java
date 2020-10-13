@@ -1,5 +1,6 @@
 package com.project.fabulous.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -11,20 +12,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
 import com.project.fabulous.models.DailyHabit;
 import com.project.fabulous.models.Todo;
+import com.project.fabulous.ui.habit_category.HabitCategoryFragment;
+import com.project.fabulous.ui.send_mail.SendMailActivity;
 
 import java.util.ArrayList;
 
-public class DashboardFragment extends Fragment implements DailyHabitsAdapter.OnClickDailyHabitsListener, TodosAdapter.OnClickTodosListener {
+public class DashboardFragment extends Fragment implements DailyHabitsAdapter.OnClickDailyHabitsListener, TodosAdapter.OnClickTodosListener, View.OnClickListener {
     private RecyclerView habitRecyclerView;
     private DailyHabitsAdapter dailyHabitsAdapter;
 
     private RecyclerView todoRecyclerView;
     private TodosAdapter todosAdapter;
+
+    private FloatingActionButton faNewTask;
+    private FloatingActionButton faNewHabit;
 
     @Nullable
     @Override
@@ -56,6 +63,10 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     private void initViews() {
         habitRecyclerView = getActivity().findViewById(R.id.rcDailyHabit);
         todoRecyclerView = getActivity().findViewById(R.id.rcTodos);
+        faNewTask = getActivity().findViewById(R.id.fabCreateTask);
+        faNewHabit = getActivity().findViewById(R.id.fabCreateNewHabit);
+        faNewTask.setOnClickListener(this);
+        faNewHabit.setOnClickListener(this);
 
         dailyHabitsAdapter = new DailyHabitsAdapter(getLayoutInflater());
         dailyHabitsAdapter.setListener(this);
@@ -64,6 +75,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         todosAdapter = new TodosAdapter(getLayoutInflater());
         todosAdapter.setListener(this);
         todoRecyclerView.setAdapter(todosAdapter);
+
     }
 
     @Override
@@ -75,7 +87,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                 dailyHabitsAdapter.getData().remove(dailyHabit);
                 dailyHabitsAdapter.notifyDataSetChanged();
             }
-        },1500);
+        }, 1500);
     }
 
     @Override
@@ -87,6 +99,23 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                 todosAdapter.getData().remove(todo);
                 todosAdapter.notifyDataSetChanged();
             }
-        },1500);
+        }, 1500);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fabCreateNewHabit:
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), HabitCategoryFragment.class);
+                startActivity(intent);
+                break;
+            case R.id.fabCreateTask:
+                Intent intent2 = new Intent();
+                intent2.setClass(getActivity(), SendMailActivity.class);
+                startActivity(intent2);
+                break;
+
+        }
     }
 }

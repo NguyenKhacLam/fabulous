@@ -8,8 +8,11 @@
     </style>
 
     <style name="HeadLineTitle">
-        <item name="android:textSize">25sp</item>
-        <item name="android:layout_marginBottom">16sp</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:layout_marginBottom">15sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+    <style name="bg_img">
+        <item name="android:scaleType">center</item>
     </style>
 </resources>

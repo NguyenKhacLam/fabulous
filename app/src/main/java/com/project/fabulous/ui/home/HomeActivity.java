@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.project.fabulous.R;
+import com.project.fabulous.ui.blog.BlogActivity;
+import com.project.fabulous.ui.habit_category.HabitCategoryFragment;
 import com.project.fabulous.ui.journal.JournalActivity;
 import com.project.fabulous.ui.statistic.StatisticActivity;
 import com.project.fabulous.ui.user.ProfileActivity;
@@ -32,6 +34,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private BlogFragment blogFragment = new BlogFragment();
     private AboutAppFragment aboutAppFragment = new AboutAppFragment();
+    private HabitCategoryFragment habitCategoryFragment = new HabitCategoryFragment();
+    private JournalActivity journalActivity = new JournalActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout, toolbar,R.string.open_navigation, R.string.close_navigation);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open_navigation, R.string.close_navigation);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
@@ -75,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.userSetting:
                 startActivity(new Intent(this, ProfileActivity.class));
                 break;
@@ -95,15 +99,24 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return aboutAppFragment;
     }
 
+    public HabitCategoryFragment getHabitCategoryFragment() {
+        return habitCategoryFragment;
+    }
+
+    public JournalActivity getJournalActivity() {
+        return journalActivity;
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.navDashboard:
                 showFragment(dashboardFragment);
                 break;
             case R.id.navBlog:
-                showFragment(blogFragment);
+//                showFragment(blogFragment);
+                startActivity(new Intent(this, BlogActivity.class));
                 break;
             case R.id.navAboutApp:
                 showFragment(aboutAppFragment);
@@ -112,7 +125,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, HomeActivity.class));
                 break;
             case R.id.navJournal:
-                startActivity(new Intent(this, JournalActivity.class));
+                showFragment(journalActivity);
                 break;
             case R.id.navStatistic:
                 startActivity(new Intent(this, StatisticActivity.class));
