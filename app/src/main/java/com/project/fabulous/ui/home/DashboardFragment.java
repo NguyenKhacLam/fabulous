@@ -2,9 +2,11 @@ package com.project.fabulous.ui.home;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,10 +16,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
+import com.project.fabulous.api.ApiBuilder;
 import com.project.fabulous.models.DailyHabit;
 import com.project.fabulous.models.Todo;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DashboardFragment extends Fragment implements DailyHabitsAdapter.OnClickDailyHabitsListener, TodosAdapter.OnClickTodosListener {
     private RecyclerView habitRecyclerView;
@@ -46,11 +54,23 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         data.add(new DailyHabit("aduhrjfhsds", "Homework"));
         dailyHabitsAdapter.setData(data);
 
-        ArrayList<Todo> data2 = new ArrayList<>();
-        data2.add(new Todo("hasgdhasdas", "Send Email"));
-        data2.add(new Todo("aasdwdwfsdf", "Shopping"));
-        data2.add(new Todo("aduhrjfhsds", "Homework"));
-        todosAdapter.setData(data2);
+        loadTodosData();
+    }
+
+    private void loadTodosData() {
+        ApiBuilder.getInstance().getTodayTodos().enqueue(new Callback<List<Todo>>() {
+            @Override
+            public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
+                ArrayList<Todo> todos = (ArrayList<Todo>) response.body();
+                todosAdapter.setData(todos);
+//                Log.d("res", "onResponse: " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Todo>> call, Throwable t) {
+                Log.e("Error", "onFailure: " + t.getMessage() );
+            }
+        });
     }
 
     private void initViews() {

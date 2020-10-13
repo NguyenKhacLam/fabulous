@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.project.fabulous.R;
+import com.project.fabulous.ui.focusMode.FocusModeActivity;
 import com.project.fabulous.ui.journal.JournalActivity;
 import com.project.fabulous.ui.statistic.StatisticActivity;
 import com.project.fabulous.ui.user.ProfileActivity;
@@ -107,6 +108,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.navAboutApp:
                 showFragment(aboutAppFragment);
+                break;
+            case R.id.navFocusMode:
+                startActivity(new Intent(this, FocusModeActivity.class));
                 break;
             case R.id.navHome:
                 startActivity(new Intent(this, HomeActivity.class));

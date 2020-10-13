@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.project.fabulous">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_logo"
@@ -9,7 +11,8 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.user.ProfileActivity"></activity>
+        <activity android:name=".ui.focusMode.FocusModeActivity" />
+        <activity android:name=".ui.user.ProfileActivity" />
         <activity android:name=".ui.statistic.StatisticActivity" />
         <activity android:name=".ui.journal.JournalActivity" />
         <activity android:name=".ui.home.HomeActivity" />

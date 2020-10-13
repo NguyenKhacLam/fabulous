@@ -82,7 +82,7 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.HolderTodos>
         }
 
         private void bindView(Todo todo) {
-            checkBox.setText(todo.getName());
+            checkBox.setText(todo.getTitle());
         }
     }
 
