@@ -22,12 +22,12 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/menuBar"
+                android:id="@+id/tbDetail"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 android:background="#89B68C"
                 app:navigationIcon="@drawable/ic_baseline_keyboard_backspace_24"
-                app:title="Create Habit" />
+                app:title="100 push up" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView

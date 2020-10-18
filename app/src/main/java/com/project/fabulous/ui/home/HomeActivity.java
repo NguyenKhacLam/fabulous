@@ -27,6 +27,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private int mMenuID;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -57,6 +58,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.mainToolbar);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
@@ -110,6 +112,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        mMenuID = item.getItemId();
+        for (int i = 0; i < bottomNavigationView.getMenu().size(); i++) {
+            MenuItem menuItem = bottomNavigationView.getMenu().getItem(i);
+            boolean isChecked = menuItem.getItemId() == item.getItemId();
+            menuItem.setChecked(isChecked);
+        }
         switch (item.getItemId()) {
             case R.id.navDashboard:
                 showFragment(dashboardFragment);
@@ -132,6 +140,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
         }
-        return false;
+        return true;
     }
 }

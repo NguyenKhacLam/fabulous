@@ -2,11 +2,13 @@ package com.project.fabulous.ui.exercise;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.ExerciseAdapter;
 import com.project.fabulous.models.Exercise;
@@ -19,6 +21,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseAdapt
     RecyclerView rc;
     ExerciseAdapter adapter;
     ArrayList<Exercise> exercises;
+    MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,6 +35,17 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseAdapt
         rc = findViewById(R.id.rcExercise);
         adapter = new ExerciseAdapter(getLayoutInflater());
         adapter.setExerciseItemListener(this);
+        toolbar = findViewById(R.id.tbExercise);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+                finish();
+            }
+        });
         rc.setAdapter(adapter);
     }
 

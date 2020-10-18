@@ -1,11 +1,13 @@
 package com.project.fabulous.ui.habit_detail;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.HaBitDetailAdapter;
 import com.project.fabulous.models.HabitDetail;
@@ -16,6 +18,7 @@ public class HabitDetailActivity extends AppCompatActivity {
     private RecyclerView rc;
     private HaBitDetailAdapter adapter;
     private ArrayList<HabitDetail> details;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,6 +31,17 @@ public class HabitDetailActivity extends AppCompatActivity {
     private void initView() {
         rc = findViewById(R.id.rcHabitDetail);
         adapter = new HaBitDetailAdapter(getLayoutInflater());
+        toolbar = findViewById(R.id.tbDetail);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+                finish();
+            }
+        });
         rc.setAdapter(adapter);
     }
 

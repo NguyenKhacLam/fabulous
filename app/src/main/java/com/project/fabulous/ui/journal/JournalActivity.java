@@ -6,20 +6,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.JournalAdapter;
 import com.project.fabulous.models.Journal;
+import com.project.fabulous.ui.editor.Editor;
+import com.project.fabulous.ui.habit_category.HabitCategoryFragment;
 
 import java.util.ArrayList;
 
 public class JournalActivity extends Fragment {
     private RecyclerView rc;
     private JournalAdapter adapter;
+    private FloatingActionButton actionButton;
 
     @Nullable
     @Override
@@ -37,6 +42,15 @@ public class JournalActivity extends Fragment {
     private void initView() {
         rc = getActivity().findViewById(R.id.rcJournal);
         adapter = new JournalAdapter(getLayoutInflater());
+        actionButton = getActivity().findViewById(R.id.faAddPost);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), Editor.class);
+                startActivity(intent);
+            }
+        });
         rc.setAdapter(adapter);
     }
 

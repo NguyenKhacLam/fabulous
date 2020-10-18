@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.LastestPostAdapter;
 import com.project.fabulous.adapters.TrendingAdapter;
@@ -22,6 +23,7 @@ public class BlogActivity extends AppCompatActivity implements LastestPostAdapte
     private RecyclerView rc_trending;
     private TrendingAdapter trendingAdapter;
     private Button btnMore;
+    MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,6 +43,18 @@ public class BlogActivity extends AppCompatActivity implements LastestPostAdapte
         trendingAdapter = new TrendingAdapter(getLayoutInflater());
         trendingAdapter.setTrendingItemListener(this);
         rc_trending.setAdapter(trendingAdapter);
+        btnMore = findViewById(R.id.btnReadMore);
+
+        toolbar = findViewById(R.id.tbBlog);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
     }
 

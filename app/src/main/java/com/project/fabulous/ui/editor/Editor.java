@@ -1,27 +1,32 @@
-package com.project.fabulous.ui.blog;
+package com.project.fabulous.ui.editor;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.chinalwb.are.AREditor;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.project.fabulous.R;
 
-public class BlogDetailActivity extends AppCompatActivity {
-    CollapsingToolbarLayout collapsingToolbarLayout;
+public class Editor extends AppCompatActivity {
+    MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_post);
+        setContentView(R.layout.activity_add_post);
         initView();
     }
 
     private void initView() {
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        AREditor arEditor = this.findViewById(R.id.areditor);
+        arEditor.setExpandMode(AREditor.ExpandMode.FULL);
+        arEditor.setHideToolbar(false);
+        arEditor.setToolbarAlignment(AREditor.ToolbarAlignment.BOTTOM);
+        toolbar = findViewById(R.id.tbNewPost);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -29,10 +34,14 @@ public class BlogDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onBackPressed();
-                finish();
             }
         });
-        collapsingToolbarLayout = findViewById(R.id.ctBlog);
-        collapsingToolbarLayout.setTitle("How can you push-up stroger?");
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_post, menu);
+        return true;
     }
 }

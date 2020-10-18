@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:are="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,18 +11,30 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/tbExercise"
+            android:id="@+id/tbNewPost"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="#ffff"
             app:navigationIcon="@drawable/ic_baseline_keyboard_backspace_24"
-            app:title="Exercise"
+            app:title="New Post"
             app:titleTextColor="#000" />
     </com.google.android.material.appbar.AppBarLayout>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rcExercise"
+
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_marginTop="20dp"
+        android:hint="Title"
+        android:padding="15dp" />
+
+    <com.chinalwb.are.AREditor
+        android:id="@+id/areditor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/holo_green_dark"
+        are:expandMode="MIN"
+        are:hideToolbar="true"
+        are:toolbarAlignment="TOP" />
 
 </LinearLayout>

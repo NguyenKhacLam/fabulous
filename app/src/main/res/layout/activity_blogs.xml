@@ -10,7 +10,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/menuBar"
+            android:id="@+id/tbBlog"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:background="#ffff"
@@ -19,43 +19,56 @@
             app:titleTextColor="#000" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:id="@+id/lastestPost"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="15dp">
 
-        <TextView
-            style="@style/HeadLineTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lastest post" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcBlog"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/lnTrend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/lastestPost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <TextView
-            style="@style/HeadLineTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Trending" />
+                <TextView
+                    style="@style/HeadLineTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lastest post" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rcTrending"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-    </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcBlog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lnTrend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/HeadLineTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Trending" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcTrending"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            </LinearLayout>
 
 
+        </LinearLayout>
+
+    </ScrollView>
 </LinearLayout>

@@ -2,12 +2,14 @@ package com.project.fabulous.ui.habit_category;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.HabitCategoryAdapter;
 import com.project.fabulous.models.HabitCategory;
@@ -19,6 +21,7 @@ public class HabitCategoryFragment extends AppCompatActivity implements HabitCat
     private RecyclerView rc;
     private HabitCategoryAdapter adapter;
     private ArrayList<HabitCategory> arrayList;
+    MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +37,17 @@ public class HabitCategoryFragment extends AppCompatActivity implements HabitCat
         rc.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new HabitCategoryAdapter(getLayoutInflater());
         adapter.setHabitCategoryItemListener(this);
+        toolbar = findViewById(R.id.menuBar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+                finish();
+            }
+        });
         rc.setAdapter(adapter);
 
     }
