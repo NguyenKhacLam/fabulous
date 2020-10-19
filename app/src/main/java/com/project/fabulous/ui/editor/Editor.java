@@ -1,15 +1,20 @@
 package com.project.fabulous.ui.editor;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chinalwb.are.AREditor;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.project.fabulous.R;
+import com.project.fabulous.ui.user.ProfileActivity;
 
 public class Editor extends AppCompatActivity {
     MaterialToolbar toolbar;
@@ -42,6 +47,16 @@ public class Editor extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_post, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navSave:
+                Toast.makeText(this, "Save", Toast.LENGTH_SHORT).show();
+                break;
+        }
         return true;
     }
 }

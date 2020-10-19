@@ -27,11 +27,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="59dp"
+        android:backgroundTint="#023157"
         android:src="@drawable/ic_baseline_add_24"
-        app:menu_backgroundColor="@android:color/transparent"
-        app:menu_colorNormal="@color/colorPrimaryDark"
-        app:menu_openDirection="up"
-        app:menu_showShadow="true" />
+        app:fabSize="normal" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
