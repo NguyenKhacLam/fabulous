@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.todos.CreateTodoActivity"></activity>
         <activity android:name=".ui.focusMode.FocusModeActivity" />
         <activity android:name=".ui.user.ProfileActivity" />
         <activity android:name=".ui.statistic.StatisticActivity" />
