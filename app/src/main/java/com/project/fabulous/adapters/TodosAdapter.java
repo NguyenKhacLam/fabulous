@@ -1,6 +1,7 @@
 package com.project.fabulous.adapters;
 
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.HolderTodos>
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    listener.onClickTodos(todo);
+                    listener.onClickCheckBoxTodos(todo, position);
                 }
             });
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -82,11 +83,16 @@ public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.HolderTodos>
         }
 
         private void bindView(Todo todo) {
-            checkBox.setText(todo.getName());
+            checkBox.setText(todo.getTitle());
+            if (todo.getStatus()){
+                checkBox.setChecked(true);
+                checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            }
         }
     }
 
     public interface OnClickTodosListener {
+        void onClickCheckBoxTodos(Todo todo, int position);
         void onClickTodos(Todo todo);
     }
 
