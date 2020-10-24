@@ -1,27 +1,35 @@
 package com.project.fabulous.adapters;
 
+
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.project.fabulous.R;
 import com.project.fabulous.models.SubTask;
-import com.project.fabulous.ui.send_mail.SendMailActivity;
+import com.project.fabulous.R;
+
 
 import java.util.ArrayList;
 
-public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.subTaskHolder> {
-    LayoutInflater inflater;
-    ArrayList<SubTask> data;
+public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.HolderSubTask> {
 
-    public SubTaskAdapter(LayoutInflater inflater) {
-        this.inflater = inflater;
+    private LayoutInflater layoutInflater;
+    private ArrayList<SubTask> data;
+    private OnClickSubTaskListener listener;
+
+    public SubTaskAdapter(LayoutInflater layoutInflater) {
+        this.layoutInflater = layoutInflater;
+    }
+
+    public void setListener(OnClickSubTaskListener listener) {
+        this.listener = listener;
     }
 
     public void setData(ArrayList<SubTask> data) {
@@ -31,15 +39,23 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.subTaskH
 
     @NonNull
     @Override
-    public subTaskHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_sub_task, parent, false);
-        return new subTaskHolder(view);
+    public HolderSubTask onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = layoutInflater.inflate(R.layout.item_subtask, parent, false);
+        return new HolderSubTask(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull subTaskHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HolderSubTask holder, int position) {
         final SubTask subTask = data.get(position);
-        holder.bindData(subTask);
+        holder.bindView(subTask);
+        if (listener != null) {
+            holder.checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClickSubTask(subTask);
+                }
+            });
+        }
     }
 
     @Override
@@ -47,23 +63,26 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.subTaskH
         return data == null ? 0 : data.size();
     }
 
-    public class subTaskHolder extends RecyclerView.ViewHolder {
-        TextView tv_sub_task;
-        Button btn_add_sub_task;
 
-        public subTaskHolder(@NonNull View itemView) {
+    public class HolderSubTask extends RecyclerView.ViewHolder {
+        private CheckBox checkBox;
+
+        public HolderSubTask(@NonNull View itemView) {
             super(itemView);
-            tv_sub_task = itemView.findViewById(R.id.itemSubTask);
-            btn_add_sub_task = itemView.findViewById(R.id.btnAddSubTask);
-//            btn_add_sub_task.setOnClickListener(this);
+            checkBox = itemView.findViewById(R.id.checkBoxSubTask);
         }
 
-        public void bindData(SubTask subTask) {
-            tv_sub_task.setText(subTask.getName());
+        private void bindView(SubTask subTask) {
+            checkBox.setText(subTask.getTitle());
+            if (subTask.getStatus()){
+                checkBox.setChecked(true);
+                checkBox.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            }
         }
-
-//        @Override
-//        public void onClick(View view) {
-//        }
     }
+
+    public interface OnClickSubTaskListener {
+        void onClickSubTask(SubTask subTask);
+    }
+
 }

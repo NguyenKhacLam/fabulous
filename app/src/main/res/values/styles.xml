@@ -14,5 +14,12 @@
     </style>
     <style name="bg_img">
         <item name="android:scaleType">center</item>
+  </style>
+
+    <style name="MyEditTextTheme">
+        <item name="colorControlNormal">@color/colorBlack</item>
+        <item name="colorControlActivated">@color/colorPrimaryDark</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+
     </style>
 </resources>

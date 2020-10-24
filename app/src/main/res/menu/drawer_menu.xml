@@ -10,9 +10,14 @@
             android:icon="@drawable/ic_settings"
             android:title="Blogs"/>
         <item
+            android:id="@+id/navFocusMode"
+            android:icon="@drawable/ic_baseline_center_focus_strong_24"
+            android:title="Focus mode"/>
+        <item
             android:id="@+id/navAboutApp"
             android:icon="@drawable/ic_about"
             android:title="About App"/>
+
         <item
             android:id="@+id/navRate"
             android:icon="@drawable/ic_star"

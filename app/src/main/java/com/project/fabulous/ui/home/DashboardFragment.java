@@ -3,9 +3,11 @@ package com.project.fabulous.ui.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,22 +18,27 @@ import com.github.clans.fab.FloatingActionButton;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
+import com.project.fabulous.api.ApiBuilder;
 import com.project.fabulous.models.DailyHabit;
 import com.project.fabulous.models.Todo;
-import com.project.fabulous.ui.habit_category.HabitCategoryFragment;
-import com.project.fabulous.ui.send_mail.SendMailActivity;
+import com.project.fabulous.ui.todos.CreateTodoActivity;
+import com.project.fabulous.ui.todos.TodoBottomSheetDialogFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class DashboardFragment extends Fragment implements DailyHabitsAdapter.OnClickDailyHabitsListener, TodosAdapter.OnClickTodosListener, View.OnClickListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class DashboardFragment extends Fragment implements DailyHabitsAdapter.OnClickDailyHabitsListener, View.OnClickListener, TodosAdapter.OnClickTodosListener {
     private RecyclerView habitRecyclerView;
     private DailyHabitsAdapter dailyHabitsAdapter;
 
     private RecyclerView todoRecyclerView;
     private TodosAdapter todosAdapter;
 
-    private FloatingActionButton faNewTask;
-    private FloatingActionButton faNewHabit;
+    private FloatingActionButton createHabitBtn, createTodoBtn;
 
     @Nullable
     @Override
@@ -53,20 +60,31 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         data.add(new DailyHabit("aduhrjfhsds", "Homework"));
         dailyHabitsAdapter.setData(data);
 
-        ArrayList<Todo> data2 = new ArrayList<>();
-        data2.add(new Todo("hasgdhasdas", "Send Email"));
-        data2.add(new Todo("aasdwdwfsdf", "Shopping"));
-        data2.add(new Todo("aduhrjfhsds", "Homework"));
-        todosAdapter.setData(data2);
+        loadTodosData();
+    }
+
+    private void loadTodosData() {
+        ApiBuilder.getInstance().getTodayTodos().enqueue(new Callback<List<Todo>>() {
+            @Override
+            public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
+                ArrayList<Todo> todos = (ArrayList<Todo>) response.body();
+                todosAdapter.setData(todos);
+//                Log.d("res", "onResponse: " + response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Todo>> call, Throwable t) {
+                Log.e("Error", "onFailure: " + t.getMessage() );
+            }
+        });
     }
 
     private void initViews() {
         habitRecyclerView = getActivity().findViewById(R.id.rcDailyHabit);
         todoRecyclerView = getActivity().findViewById(R.id.rcTodos);
-        faNewTask = getActivity().findViewById(R.id.fabCreateTask);
-        faNewHabit = getActivity().findViewById(R.id.fabCreateNewHabit);
-        faNewTask.setOnClickListener(this);
-        faNewHabit.setOnClickListener(this);
+
+        createTodoBtn = getActivity().findViewById(R.id.fabCreateTask);
+        createTodoBtn.setOnClickListener(this);
 
         dailyHabitsAdapter = new DailyHabitsAdapter(getLayoutInflater());
         dailyHabitsAdapter.setListener(this);
@@ -75,9 +93,9 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         todosAdapter = new TodosAdapter(getLayoutInflater());
         todosAdapter.setListener(this);
         todoRecyclerView.setAdapter(todosAdapter);
-
     }
-
+    
+    // Click to daily habit
     @Override
     public void onClickDailyHabits(final DailyHabit dailyHabit) {
         final Handler handler = new Handler();
@@ -87,35 +105,31 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                 dailyHabitsAdapter.getData().remove(dailyHabit);
                 dailyHabitsAdapter.notifyDataSetChanged();
             }
-        }, 1500);
+        },1500);
+    }
+
+    
+    // Click to daily task
+    @Override
+    public void onClickCheckBoxTodos(Todo todo, int position) {
+        todo.setStatus(true);
+        todosAdapter.notifyItemChanged(position);
     }
 
     @Override
-    public void onClickTodos(final Todo todo) {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                todosAdapter.getData().remove(todo);
-                todosAdapter.notifyDataSetChanged();
-            }
-        }, 1500);
+    public void onClickTodos(Todo todo) {
+        TodoBottomSheetDialogFragment todoBottomSheetDialogFragment = TodoBottomSheetDialogFragment.newInstance();
+        todoBottomSheetDialogFragment.show(getActivity().getSupportFragmentManager(), "todoBottomSheetDialogFragment");
     }
 
+    
+    // Click Event
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.fabCreateNewHabit:
-                Intent intent = new Intent();
-                intent.setClass(getActivity(), HabitCategoryFragment.class);
-                startActivity(intent);
-                break;
+    public void onClick(View v) {
+        switch (v.getId()){
             case R.id.fabCreateTask:
-                Intent intent2 = new Intent();
-                intent2.setClass(getActivity(), SendMailActivity.class);
-                startActivity(intent2);
+                startActivity(new Intent(getContext(), CreateTodoActivity.class));
                 break;
-
         }
     }
 }
