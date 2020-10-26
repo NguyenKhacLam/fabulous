@@ -17,7 +17,7 @@ import com.project.fabulous.ui.exercise.ExerciseActivity;
 
 import java.util.ArrayList;
 
-public class HabitCategoryFragment extends AppCompatActivity implements HabitCategoryAdapter.HabitCategoryItemListener {
+public class HabitCategoryActivity extends AppCompatActivity implements HabitCategoryAdapter.HabitCategoryItemListener {
     private RecyclerView rc;
     private HabitCategoryAdapter adapter;
     private ArrayList<HabitCategory> arrayList;

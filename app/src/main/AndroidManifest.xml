@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">\
+        android:theme="@style/AppTheme">
 
         <activity android:name=".ui.send_mail.SendMailActivity" />
 
@@ -19,7 +19,7 @@
         <activity android:name=".ui.habit_detail.HabitDetailActivity" />
         <activity android:name=".ui.blog.BlogActivity" />
         <activity android:name=".ui.exercise.ExerciseActivity" />
-        <activity android:name=".ui.habit_category.HabitCategoryFragment" />
+        <activity android:name=".ui.habit_category.HabitCategoryActivity" />
 <!--        <activity android:name=".ui.user.ProfileActivity"></activity>-->
 
         <activity android:name=".ui.todos.CreateTodoActivity"></activity>
