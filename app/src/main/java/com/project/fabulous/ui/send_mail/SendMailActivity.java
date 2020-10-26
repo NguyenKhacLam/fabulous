@@ -33,9 +33,9 @@ public class SendMailActivity extends AppCompatActivity {
 
     private void initData() {
         ArrayList<SubTask> subTasks = new ArrayList<>();
-        subTasks.add(new SubTask("email for me"));
-        subTasks.add(new SubTask("email for me"));
-        subTasks.add(new SubTask("email for me"));
+        subTasks.add(new SubTask(1,"email for me",true));
+        subTasks.add(new SubTask(2,"email for me",false));
+        subTasks.add(new SubTask(3,"email for me",true));
         adapter.setData(subTasks);
     }
 }
