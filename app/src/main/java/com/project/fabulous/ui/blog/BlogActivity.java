@@ -23,7 +23,7 @@ public class BlogActivity extends AppCompatActivity implements LastestPostAdapte
     private RecyclerView rc_trending;
     private TrendingAdapter trendingAdapter;
     private Button btnMore;
-    MaterialToolbar toolbar;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
