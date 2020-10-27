@@ -3,19 +3,21 @@ package com.project.fabulous.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.project.fabulous.R;
-import com.project.fabulous.models.Exercise;
+import com.project.fabulous.models.Habit;
 
 import java.util.ArrayList;
 
 public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.exerciseHolder> {
     private LayoutInflater inflater;
-    private ArrayList<Exercise> data;
+    private ArrayList<Habit> data;
     private exerciseItemListener exerciseItemListener;
 
     public void setExerciseItemListener(ExerciseAdapter.exerciseItemListener exerciseItemListener) {
@@ -26,7 +28,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.exerci
         this.inflater = inflater;
     }
 
-    public void setData(ArrayList<Exercise> data) {
+    public void setData(ArrayList<Habit> data) {
         this.data = data;
         notifyDataSetChanged();
     }
@@ -41,13 +43,13 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.exerci
 
     @Override
     public void onBindViewHolder(@NonNull exerciseHolder holder, int position) {
-        final Exercise exercise = data.get(position);
-        holder.bindData(exercise);
+        final Habit habit = data.get(position);
+        holder.bindData(habit);
         if (exerciseItemListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    exerciseItemListener.onClickExercise(exercise);
+                    exerciseItemListener.onClickExercise(habit);
                 }
             });
         }
@@ -60,20 +62,21 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.exerci
 
     public class exerciseHolder extends RecyclerView.ViewHolder {
         TextView tv_title, tv_summary;
+        ImageView imageView;
 
         public exerciseHolder(@NonNull View itemView) {
             super(itemView);
             tv_title = itemView.findViewById(R.id.tvTitle);
-            tv_summary = itemView.findViewById(R.id.tvSummary);
+            imageView = itemView.findViewById(R.id.imgExercise);
         }
 
-        public void bindData(Exercise exercise) {
-            tv_title.setText(exercise.getTitle());
-            tv_summary.setText(exercise.getSummary());
+        public void bindData(Habit habit) {
+            tv_title.setText(habit.getTitle());
+            Glide.with(imageView).load(habit.getImageUrl()).into(imageView);
         }
     }
 
     public interface exerciseItemListener {
-        void onClickExercise(Exercise exercise);
+        void onClickExercise(Habit habit);
     }
 }

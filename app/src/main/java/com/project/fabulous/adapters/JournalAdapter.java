@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.fabulous.R;
-import com.project.fabulous.models.Exercise;
 import com.project.fabulous.models.Journal;
 
 import java.util.ArrayList;

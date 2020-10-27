@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.fabulous.R;
 import com.project.fabulous.models.Blog;
-import com.project.fabulous.models.Exercise;
 
 import java.util.ArrayList;
 

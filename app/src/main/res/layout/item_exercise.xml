@@ -44,14 +44,6 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvSummary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Make your arms stronger"
-                    android:textColor="#ffff"
-                    android:textSize="16sp" />
-
             </LinearLayout>
 
 

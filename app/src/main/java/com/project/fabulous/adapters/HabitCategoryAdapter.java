@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.project.fabulous.R;
 import com.project.fabulous.models.HabitCategory;
 
@@ -69,10 +70,12 @@ public class HabitCategoryAdapter extends RecyclerView.Adapter<HabitCategoryAdap
         public habitCategoryHolder(@NonNull View itemView) {
             super(itemView);
             tvCategory = itemView.findViewById(R.id.tvHabitCate);
+            imageView = itemView.findViewById(R.id.imgHabitCate);
         }
 
         public void bindData(HabitCategory habitCategory) {
             tvCategory.setText(habitCategory.getCategory());
+            Glide.with(imageView).load(habitCategory.getImgCategory()).into(imageView);
         }
     }
 
