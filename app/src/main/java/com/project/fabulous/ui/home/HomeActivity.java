@@ -12,13 +12,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.project.fabulous.R;
 import com.project.fabulous.ui.blog.BlogActivity;
-import com.project.fabulous.ui.habit_category.HabitCategoryFragment;
+import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
 
 import com.project.fabulous.ui.focusMode.FocusModeActivity;
 
@@ -38,7 +37,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private DashboardFragment dashboardFragment = new DashboardFragment();
     private BlogFragment blogFragment = new BlogFragment();
     private AboutAppFragment aboutAppFragment = new AboutAppFragment();
-    private HabitCategoryFragment habitCategoryFragment = new HabitCategoryFragment();
+    private HabitCategoryActivity habitCategoryActivity = new HabitCategoryActivity();
     private JournalActivity journalActivity = new JournalActivity();
 
     @Override
@@ -104,8 +103,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return aboutAppFragment;
     }
 
-    public HabitCategoryFragment getHabitCategoryFragment() {
-        return habitCategoryFragment;
+    public HabitCategoryActivity getHabitCategoryFragment() {
+        return habitCategoryActivity;
     }
 
     public JournalActivity getJournalActivity() {

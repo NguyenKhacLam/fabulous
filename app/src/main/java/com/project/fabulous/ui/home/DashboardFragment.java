@@ -21,6 +21,7 @@ import com.project.fabulous.adapters.TodosAdapter;
 import com.project.fabulous.api.ApiBuilder;
 import com.project.fabulous.models.DailyHabit;
 import com.project.fabulous.models.Todo;
+import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
 import com.project.fabulous.ui.todos.CreateTodoActivity;
 import com.project.fabulous.ui.todos.TodoBottomSheetDialogFragment;
 
@@ -86,6 +87,9 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         createTodoBtn = getActivity().findViewById(R.id.fabCreateTask);
         createTodoBtn.setOnClickListener(this);
 
+        createHabitBtn = getActivity().findViewById(R.id.fabCreateNewHabit);
+        createHabitBtn.setOnClickListener(this);
+
         dailyHabitsAdapter = new DailyHabitsAdapter(getLayoutInflater());
         dailyHabitsAdapter.setListener(this);
         habitRecyclerView.setAdapter(dailyHabitsAdapter);
@@ -129,6 +133,9 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         switch (v.getId()){
             case R.id.fabCreateTask:
                 startActivity(new Intent(getContext(), CreateTodoActivity.class));
+                break;
+            case R.id.fabCreateNewHabit:
+                startActivity(new Intent(getContext(), HabitCategoryActivity.class));
                 break;
         }
     }
