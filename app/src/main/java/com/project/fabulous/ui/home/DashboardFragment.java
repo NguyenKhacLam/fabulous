@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
@@ -26,7 +35,9 @@ import com.project.fabulous.ui.todos.CreateTodoActivity;
 import com.project.fabulous.ui.todos.TodoBottomSheetDialogFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,7 +50,12 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     private RecyclerView todoRecyclerView;
     private TodosAdapter todosAdapter;
 
+    private ProgressBar progressBar;
+
     private FloatingActionButton createHabitBtn, createTodoBtn;
+
+    private FirebaseUser currentUser;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Nullable
     @Override
@@ -50,18 +66,30 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
         initViews();
-        loadData();
+        loadsData();
     }
 
-    private void loadData() {
-        ArrayList<DailyHabit> data = new ArrayList<>();
-        data.add(new DailyHabit("hasgdhasdas", "Send Email"));
-        data.add(new DailyHabit("aasdwdwfsdf", "Shopping"));
-        data.add(new DailyHabit("aduhrjfhsds", "Homework"));
-        dailyHabitsAdapter.setData(data);
-
+    private void loadsData() {
+        progressBar.setVisibility(View.VISIBLE);
+        loadDailyHabitData();
         loadTodosData();
+    }
+
+    private void loadDailyHabitData() {
+        ApiBuilder.getInstance().getHabitByUser(currentUser.getUid()).enqueue(new Callback<List<DailyHabit>>() {
+            @Override
+            public void onResponse(Call<List<DailyHabit>> call, Response<List<DailyHabit>> response) {
+                ArrayList<DailyHabit> dailyHabits = (ArrayList<DailyHabit>) response.body();
+                dailyHabitsAdapter.setData(dailyHabits);
+            }
+
+            @Override
+            public void onFailure(Call<List<DailyHabit>> call, Throwable t) {
+                Log.e("Error", "onFailure: " + t.getMessage() );
+            }
+        });
     }
 
     private void loadTodosData() {
@@ -70,6 +98,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
             public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
                 ArrayList<Todo> todos = (ArrayList<Todo>) response.body();
                 todosAdapter.setData(todos);
+                progressBar.setVisibility(View.GONE);
 //                Log.d("res", "onResponse: " + response.body());
             }
 
@@ -81,6 +110,9 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     }
 
     private void initViews() {
+        progressBar = getActivity().findViewById(R.id.progressBarHome);
+        progressBar.setVisibility(View.GONE);
+
         habitRecyclerView = getActivity().findViewById(R.id.rcDailyHabit);
         todoRecyclerView = getActivity().findViewById(R.id.rcTodos);
 
@@ -101,29 +133,69 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     
     // Click to daily habit
     @Override
-    public void onClickDailyHabits(final DailyHabit dailyHabit) {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                dailyHabitsAdapter.getData().remove(dailyHabit);
-                dailyHabitsAdapter.notifyDataSetChanged();
-            }
-        },1500);
-    }
+    public void onClickDailyHabits(final DailyHabit dailyHabit, int position) {
+        Map<Object, Object> habitNeedDelete = new HashMap<>();
+        habitNeedDelete.put("name", dailyHabit.getName());
+        habitNeedDelete.put("todayStatus", false);
 
+        Map<Object, Object> habitNeedUpdate = new HashMap<>();
+        habitNeedUpdate.put("name", dailyHabit.getName());
+        habitNeedUpdate.put("todayStatus", true);
+
+        db.collection("user_habit").document(currentUser.getUid())
+                .update("habits", FieldValue.arrayRemove(habitNeedDelete))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("TAG", "Delete successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("TAG", "onFailure: " + e.getMessage());
+                    }
+                });
+
+        db.collection("user_habit").document(currentUser.getUid())
+                .update("habits", FieldValue.arrayUnion(habitNeedUpdate))
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("TAG", "Delete successfully!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("TAG", "onFailure: " + e.getMessage());
+                    }
+                });
+
+        dailyHabitsAdapter.getData().remove(position);
+        dailyHabitsAdapter.notifyItemRemoved(position);
+        dailyHabitsAdapter.notifyItemRangeChanged(position, dailyHabitsAdapter.getData().size());
+    }
     
     // Click to daily task
     @Override
     public void onClickCheckBoxTodos(Todo todo, int position) {
+        db.collection("todos").document(todo.getId())
+                .update("status", true)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d("Tag", "Updated!");
+                    }
+                });
         todo.setStatus(true);
         todosAdapter.notifyItemChanged(position);
     }
 
     @Override
     public void onClickTodos(Todo todo) {
-        TodoBottomSheetDialogFragment todoBottomSheetDialogFragment = TodoBottomSheetDialogFragment.newInstance();
-        todoBottomSheetDialogFragment.show(getActivity().getSupportFragmentManager(), "todoBottomSheetDialogFragment");
+//        TodoBottomSheetDialogFragment todoBottomSheetDialogFragment = TodoBottomSheetDialogFragment.newInstance();
+//        todoBottomSheetDialogFragment.show(getActivity().getSupportFragmentManager(), "todoBottomSheetDialogFragment");
     }
 
     

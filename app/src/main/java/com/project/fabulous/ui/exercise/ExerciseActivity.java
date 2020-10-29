@@ -97,6 +97,7 @@ public class ExerciseActivity extends AppCompatActivity implements ExerciseAdapt
     @Override
     public void onClickExercise(Habit habit) {
         Intent intent = new Intent(this, HabitDetailActivity.class);
+        intent.putExtra("habitId", habit.getId());
         startActivity(intent);
     }
 }

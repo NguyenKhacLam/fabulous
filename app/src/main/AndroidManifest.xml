@@ -20,7 +20,6 @@
         <activity android:name=".ui.blog.BlogActivity" />
         <activity android:name=".ui.exercise.ExerciseActivity" />
         <activity android:name=".ui.habit_category.HabitCategoryActivity" />
-<!--        <activity android:name=".ui.user.ProfileActivity"></activity>-->
 
         <activity android:name=".ui.todos.CreateTodoActivity"></activity>
         <activity android:name=".ui.focusMode.FocusModeActivity" />

@@ -36,7 +36,6 @@ public class DailyHabitsAdapter extends RecyclerView.Adapter<DailyHabitsAdapter.
         this.data = data;
         notifyDataSetChanged();
     }
-
     public ArrayList<DailyHabit> getData() {
         return data;
     }
@@ -56,13 +55,13 @@ public class DailyHabitsAdapter extends RecyclerView.Adapter<DailyHabitsAdapter.
             holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    listener.onClickDailyHabits(dailyHabit);
+                    listener.onClickDailyHabits(dailyHabit, position);
                 }
             });
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onClickDailyHabits(dailyHabit);
+                    listener.onClickDailyHabits(dailyHabit, position);
                 }
             });
         }
@@ -87,7 +86,7 @@ public class DailyHabitsAdapter extends RecyclerView.Adapter<DailyHabitsAdapter.
     }
 
     public interface OnClickDailyHabitsListener {
-        void onClickDailyHabits(DailyHabit dailyHabit);
+        void onClickDailyHabits(DailyHabit dailyHabit, int position);
     }
 
 }
