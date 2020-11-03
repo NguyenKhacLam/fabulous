@@ -10,8 +10,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ImageView imgUser;
     private TextView tvUser, tvEmail;
     private FirebaseAuth mAuth;
-    private FirebaseUser user;
+    private FirebaseUser currentUser;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -52,26 +54,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private StatisticActivity statisticActivity = new StatisticActivity();
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-//        updateUI(user);
-    }
-
-    private void updateUI(FirebaseUser user) {
-        Glide.with(this).load(user.getPhotoUrl()).into(imgUser);
-        tvUser.setText(user.getDisplayName());
-        tvEmail.setText(user.getEmail());
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
         initViews();
         showFragment(dashboardFragment);
-
     }
 
 
@@ -83,13 +71,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void initViews() {
+
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.mainToolbar);
         bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
-
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         toolbar.setTitle("Home");
@@ -101,9 +91,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
-        imgUser = findViewById(R.id.userImage);
-        tvUser = findViewById(R.id.userName);
-        tvEmail = findViewById(R.id.userEmail);
+        View header = navigationView.getHeaderView(0);
+        imgUser = header.findViewById(R.id.userImage);
+        tvUser = header.findViewById(R.id.userName);
+        tvEmail = header.findViewById(R.id.userEmail);
+
+        updateUI(currentUser);
+    }
+
+    private void updateUI(FirebaseUser user) {
+        Glide.with(HomeActivity.this).load(user.getPhotoUrl().toString()).into(imgUser);
+        tvUser.setText(user.getDisplayName());
+        tvEmail.setText(user.getEmail());
     }
 
     @Override
