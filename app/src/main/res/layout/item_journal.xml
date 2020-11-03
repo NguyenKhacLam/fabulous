@@ -5,7 +5,11 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:padding="15dp">
+    android:paddingRight="5dp"
+    android:paddingLeft="5dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    >
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardChallenge"
@@ -42,13 +46,13 @@
                     android:textStyle="bold"
                     android:textSize="18dp" />
 
-                <TextView
+                <com.borjabravo.readmoretextview.ReadMoreTextView
                     android:id="@+id/tvContentPost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    app:colorClickableText="@color/colorPrimary"/>
             </LinearLayout>
 
         </LinearLayout>

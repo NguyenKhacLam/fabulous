@@ -11,7 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.JournalAdapter;
 import com.project.fabulous.models.Journal;
@@ -49,12 +50,13 @@ public class JournalActivity extends Fragment {
                 startActivity(intent);
             }
         });
+
         rc.setAdapter(adapter);
     }
 
     private void initData() {
         ArrayList<Journal> journals = new ArrayList<>();
-        journals.add(new Journal("Nov 20 11 month", "Today", "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English"));
+        journals.add(new Journal("Nov 20 11 month", "Today",getString(R.string.lorem_ipsum2) ));
         journals.add(new Journal("Nov 20 11 month", "Today", "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English"));
         journals.add(new Journal("Nov 20 11 month", "Today", "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English"));
         journals.add(new Journal("Nov 20 11 month", "Today", "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English"));

@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.borjabravo.readmoretextview.ReadMoreTextView;
 import com.project.fabulous.R;
 import com.project.fabulous.models.Journal;
 
@@ -45,7 +46,8 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.journalH
     }
 
     public class journalHolder extends RecyclerView.ViewHolder {
-        TextView tv_date, tv_title_post, tv_content_post;
+        TextView tv_date, tv_title_post ;
+        ReadMoreTextView tv_content_post;
 
         public journalHolder(@NonNull View itemView) {
             super(itemView);

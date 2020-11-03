@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "446494942081",
+    "firebase_url": "https://fabulous-journey.firebaseio.com",
+    "project_id": "fabulous-journey",
+    "storage_bucket": "fabulous-journey.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:446494942081:android:9f2ba3705aefef2fd03e80",
+        "android_client_info": {
+          "package_name": "com.project.fabulous"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "446494942081-5701qlkeolnl1mfdgo5ntf6ee46bdp25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.fabulous",
+            "certificate_hash": "f9f31c03a071f85ab4ff60f1c03a3b36c2df6403"
+          }
+        },
+        {
+          "client_id": "446494942081-8k0hpe67b6uhae9pbqnu0d2t9b7e15ta.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.fabulous",
+            "certificate_hash": "3978feb10faa29f14b8dfc9c93aa87c4e1771f9b"
+          }
+        },
+        {
+          "client_id": "446494942081-3s3pj9uuqqdbl5neb709voqt48udugdr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi5XoKwuruWqd3FTtqyze2wl5qPskFmJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "446494942081-3s3pj9uuqqdbl5neb709voqt48udugdr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
