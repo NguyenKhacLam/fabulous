@@ -11,22 +11,23 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".ui.note.CreateNoteActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".ui.note.NoteActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".ui.send_mail.SendMailActivity" />
-
         <activity android:name=".ui.editor.Editor" />
         <activity android:name=".ui.blog.BlogDetailActivity" />
         <activity android:name=".ui.habit_detail.HabitDetailActivity" />
         <activity android:name=".ui.blog.BlogActivity" />
         <activity android:name=".ui.exercise.ExerciseActivity" />
         <activity android:name=".ui.habit_category.HabitCategoryActivity" />
-
-        <activity android:name=".ui.todos.CreateTodoActivity"></activity>
+        <activity android:name=".ui.todos.CreateTodoActivity" />
         <activity android:name=".ui.focusMode.FocusModeActivity" />
         <activity android:name=".ui.user.ProfileActivity" />
-
-        <activity android:name=".ui.statistic.StatisticActivity" />
-        <!--        <activity android:name=".ui.journal.JournalActivity" />-->
+        <activity android:name=".ui.statistic.StatisticActivity" /> <!-- <activity android:name=".ui.journal.JournalActivity" /> -->
         <activity android:name=".ui.home.HomeActivity" />
         <activity android:name=".ui.user.LoginActivity">
             <intent-filter>
