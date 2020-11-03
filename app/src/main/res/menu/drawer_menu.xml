@@ -6,6 +6,10 @@
             android:icon="@drawable/ic_dashboard"
             android:title="Dashboard"/>
         <item
+            android:id="@+id/navNote"
+            android:icon="@drawable/ic_settings"
+            android:title="My Note"/>
+        <item
             android:id="@+id/navBlog"
             android:icon="@drawable/ic_settings"
             android:title="Blogs"/>

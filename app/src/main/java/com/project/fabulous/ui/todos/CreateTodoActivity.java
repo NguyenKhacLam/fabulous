@@ -46,7 +46,6 @@ public class CreateTodoActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_todo);
 
-
         setUpToolbar();
         initViews();
         loadData();
