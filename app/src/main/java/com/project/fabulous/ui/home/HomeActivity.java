@@ -27,6 +27,7 @@ import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
 import com.project.fabulous.ui.focusMode.FocusModeActivity;
 
 import com.project.fabulous.ui.journal.JournalActivity;
+import com.project.fabulous.ui.note.NoteActivity;
 import com.project.fabulous.ui.statistic.StatisticActivity;
 import com.project.fabulous.ui.user.ProfileActivity;
 
@@ -161,6 +162,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.navBlog:
 //                showFragment(blogFragment);
                 startActivity(new Intent(this, BlogActivity.class));
+                break;
+            case R.id.navNote:
+//                showFragment(blogFragment);
+                startActivity(new Intent(this, NoteActivity.class));
                 break;
             case R.id.navAboutApp:
                 showFragment(aboutAppFragment);
