@@ -12,9 +12,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.project.fabulous.R;
 import com.project.fabulous.ui.blog.BlogActivity;
 import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
@@ -31,6 +36,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private Toolbar toolbar;
     private int mMenuID;
+    private ImageView imgUser;
+    private TextView tvUser, tvEmail;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     private BottomNavigationView bottomNavigationView;
 
@@ -40,6 +49,20 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private AboutAppFragment aboutAppFragment = new AboutAppFragment();
     private HabitCategoryActivity habitCategoryActivity = new HabitCategoryActivity();
     private JournalActivity journalActivity = new JournalActivity();
+    private StatisticActivity statisticActivity = new StatisticActivity();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+//        updateUI(user);
+    }
+
+    private void updateUI(FirebaseUser user) {
+        Glide.with(this).load(user.getPhotoUrl()).into(imgUser);
+        tvUser.setText(user.getDisplayName());
+        tvEmail.setText(user.getEmail());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +71,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         initViews();
         showFragment(dashboardFragment);
+
     }
+
 
     private void showFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -56,7 +81,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         transaction.commit();
     }
 
+
     private void initViews() {
+        mAuth = FirebaseAuth.getInstance();
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigation_view);
         toolbar = findViewById(R.id.mainToolbar);
@@ -74,6 +101,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        imgUser = findViewById(R.id.userImage);
+        tvUser = findViewById(R.id.userName);
+        tvEmail = findViewById(R.id.userEmail);
     }
 
     @Override
@@ -112,6 +142,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return journalActivity;
     }
 
+    public StatisticActivity getStatisticActivity() {
+        return statisticActivity;
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -140,13 +174,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, FocusModeActivity.class));
                 break;
             case R.id.navHome:
-                startActivity(new Intent(this, HomeActivity.class));
+//                startActivity(new Intent(this, HomeActivity.class));
+                showFragment(dashboardFragment);
                 break;
             case R.id.navJournal:
                 showFragment(journalActivity);
                 break;
             case R.id.navStatistic:
-                startActivity(new Intent(this, StatisticActivity.class));
+//                startActivity(new Intent(this, StatisticActivity.class));
+                showFragment(statisticActivity);
                 break;
 
         }

@@ -15,6 +15,7 @@
     <string name="channel_name">focus channel</string>
     <string name="channel_description">notification channel for focusing mode</string>
     <string name="web_client_id">919857635268-642amlf272tnphu787qojapdp18desea.apps.googleusercontent.com</string>
+    <string name="lorem_ipsum2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras feugiat, nunc eget volutpat viverra, lacus ligula venenatis nulla, in accumsan eros eros nec ipsum. Fusce eget massa id lorem blandit lobortis. Donec lacus ligula, commodo quis eleifend ac, rhoncus sed mi. </string>
     <string name="search_note">Search note</string>
     <string name="note_title">Note title</string>
     <string name="note_subtitle">Note subtitle</string>
