@@ -1,8 +1,10 @@
 package com.project.fabulous.ui.note;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -11,7 +13,9 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,7 +33,7 @@ import com.project.fabulous.models.Note;
 
 import java.util.ArrayList;
 
-public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnClickNoteListener, TextWatcher {
+public class NoteActivity extends Fragment implements NoteAdapter.OnClickNoteListener, TextWatcher {
     public static final int REQUEST_CODE_ADD_NOTE = 5;
     public static final int REQUEST_CODE_UPDATE_NOTE = 6;
 
@@ -42,17 +46,33 @@ public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnCli
     private FirebaseUser currentUser;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_note);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_note, container, false);
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        setUpToolbar();
         initViews();
         loadData();
+
     }
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_note);
+//
+//        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//
+//        setUpToolbar();
+//        initViews();
+//        loadData();
+//    }
 
     private void loadData() {
         db.collection("notes")
@@ -80,23 +100,23 @@ public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnCli
                 });
     }
 
-    private void setUpToolbar() {
-        toolbar = findViewById(R.id.noteToolbar);
-        toolbar.setTitle("My note");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-    }
+//    private void setUpToolbar() {
+//        toolbar = findViewById(R.id.noteToolbar);
+//        toolbar.setTitle("My note");
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onBackPressed();
+//            }
+//        });
+//    }
 
     private void initViews() {
-        edSearchNote = findViewById(R.id.edSearchNote);
-        recyclerView = findViewById(R.id.rcListNote);
+        edSearchNote = getActivity().findViewById(R.id.edSearchNote);
+        recyclerView = getActivity().findViewById(R.id.rcListNote);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         noteAdapter = new NoteAdapter(getLayoutInflater());
         noteAdapter.setListener(this);
@@ -104,11 +124,11 @@ public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnCli
 
         edSearchNote.addTextChangedListener(this);
 
-        fab = findViewById(R.id.fabCreateNote);
+        fab = getActivity().findViewById(R.id.fabCreateNote);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(NoteActivity.this, CreateNoteActivity.class));
+                startActivity(new Intent(getActivity(), CreateNoteActivity.class));
             }
         });
 
@@ -116,7 +136,7 @@ public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnCli
 
     @Override
     public void onClickNote(Note note, int position) {
-        Intent intent = new Intent(getApplicationContext(), CreateNoteActivity.class);
+        Intent intent = new Intent(getActivity().getApplicationContext(), CreateNoteActivity.class);
         intent.putExtra("isViewOrUpdate", true);
         intent.putExtra("note", note);
         startActivity(intent);

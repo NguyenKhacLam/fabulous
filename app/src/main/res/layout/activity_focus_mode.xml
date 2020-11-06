@@ -3,23 +3,26 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    android:paddingTop="?attr/actionBarSize"
+    android:paddingEnd="10dp">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/focusToolbar"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            android:background="@color/colorPrimaryDark"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
-    </com.google.android.material.appbar.AppBarLayout>
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content">-->
+    <!--        <androidx.appcompat.widget.Toolbar-->
+    <!--            android:id="@+id/focusToolbar"-->
+    <!--            android:theme="@style/ThemeOverlay.AppCompat.Dark"-->
+    <!--            android:background="@color/colorPrimaryDark"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="?attr/actionBarSize"/>-->
+    <!--    </com.google.android.material.appbar.AppBarLayout>-->
 
     <RelativeLayout
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center">
+
         <ProgressBar
             android:id="@+id/progressBarCircle"
             style="?android:attr/progressBarStyleHorizontal"
@@ -52,12 +55,12 @@
 
 
         <TextView
-            android:layout_marginTop="30dp"
             android:id="@+id/tvTime"
-            android:layout_below="@id/progressBarCircle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/progressBarCircle"
             android:layout_centerInParent="true"
+            android:layout_marginTop="30dp"
             android:text="00:01:00"
             android:textColor="@color/colorYellow"
             android:textSize="40sp" />
@@ -69,10 +72,11 @@
             android:layout_below="@+id/tvTime"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:padding="10dp"
             android:background="@color/colorYellow"
-            android:textColor="@color/colorWhite"
-            android:text="@string/start_focusing"/>
+            android:padding="10dp"
+            android:text="@string/start_focusing"
+            android:textColor="@color/colorWhite" />
+
         <Button
             android:id="@+id/btnStopFocus"
             android:layout_width="wrap_content"
@@ -80,10 +84,10 @@
             android:layout_below="@+id/tvTime"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:padding="10dp"
-            android:visibility="gone"
             android:background="@color/colorYellow"
+            android:padding="10dp"
+            android:text="@string/stop"
             android:textColor="@color/colorWhite"
-            android:text="@string/stop"/>
+            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>
