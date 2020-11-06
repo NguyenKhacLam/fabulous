@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,17 +26,22 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
 import com.project.fabulous.api.ApiBuilder;
 import com.project.fabulous.models.DailyHabit;
 import com.project.fabulous.models.SubTask;
+import com.project.fabulous.models.Quotes;
 import com.project.fabulous.models.Todo;
 import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
 import com.project.fabulous.ui.todos.CreateTodoActivity;
@@ -60,6 +66,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     private ProgressBar progressBar;
 
     private FloatingActionButton createHabitBtn, createTodoBtn;
+    private TextView tv_author, tv_challenge;
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -82,6 +89,37 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
 //        progressBar.setVisibility(View.VISIBLE);
         loadDailyHabitData();
         loadTodosData();
+        loadQuotes();
+    }
+
+    private void loadQuotes() {
+        db.collection("quotes")
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+//                            Log.d("TAG", "onComplete: size" + task.getResult());
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                                Log.d("TAG", "onComplete: " + snapshot.getId());
+                                Quotes quotes = new Quotes();
+                                quotes.setId(snapshot.getId());
+                                quotes.setAuthor(snapshot.get("author").toString());
+                                quotes.setChallenge(snapshot.get("content").toString());
+                                tv_author.setText(quotes.getAuthor());
+                                tv_challenge.setText(quotes.getChallenge());
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("TAG", "onFailure: " + e.getMessage());
+                    }
+                });
+
     }
 
     public void loadDailyHabitData() {
@@ -96,7 +134,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                             Gson gson = new Gson();
                             JsonElement jsonElement = gson.toJsonTree(dailyHabits.get(i));
                             DailyHabit habit = gson.fromJson(jsonElement, DailyHabit.class);
-                            if (!habit.isTodayStatus()){
+                            if (!habit.isTodayStatus()) {
                                 habits.add(habit);
                             }
                         }
@@ -105,42 +143,42 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                 });
     }
 
-    public void loadTodosData() {
-        db.collection("todos")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                ArrayList<Todo> todos = new ArrayList<>();
-                for (QueryDocumentSnapshot item : value) {
-                    Todo todo = new Todo();
-                    todo.setId(item.getId());
-                    todo.setTitle(item.get("title").toString());
-                    todo.setDescription(item.get("description").toString());
-                    todo.setStatus((Boolean) item.get("status"));
+    public void loadTodosData(){
+            db.collection("todos")
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                            ArrayList<Todo> todos = new ArrayList<>();
+                            for (QueryDocumentSnapshot item : value) {
+                                Todo todo = new Todo();
+                                todo.setId(item.getId());
+                                todo.setTitle(item.get("title").toString());
+                                todo.setDescription(item.get("description").toString());
+                                todo.setStatus((Boolean) item.get("status"));
 
-                    // Convert HashMap to ArrayList<SubTask>
-                    ArrayList<HashMap<Object, Object>> subTasksHash = (ArrayList<HashMap<Object, Object>>) item.get("subTasks");
+                                // Convert HashMap to ArrayList<SubTask>
+                                ArrayList<HashMap<Object, Object>> subTasksHash = (ArrayList<HashMap<Object, Object>>) item.get("subTasks");
 
-                    ArrayList<SubTask> subTasks = new ArrayList<>();
-                    for (int i = 0; i < subTasksHash.size(); i++) {
-                        Gson gson = new Gson();
-                        JsonElement jsonElement = gson.toJsonTree(subTasksHash.get(i));
-                        SubTask subTask = gson.fromJson(jsonElement, SubTask.class);
-                        subTasks.add(subTask);
-                    }
+                                ArrayList<SubTask> subTasks = new ArrayList<>();
+                                for (int i = 0; i < subTasksHash.size(); i++) {
+                                    Gson gson = new Gson();
+                                    JsonElement jsonElement = gson.toJsonTree(subTasksHash.get(i));
+                                    SubTask subTask = gson.fromJson(jsonElement, SubTask.class);
+                                    subTasks.add(subTask);
+                                }
 
-                    todo.setSubTasks(subTasks);
+                                todo.setSubTasks(subTasks);
 
-                    if (item.get("userId").toString().equals(currentUser.getUid()) && (Boolean) item.get("status") == false){
-                        todos.add(todo);
-                    }
-                }
-                todosAdapter.setData(todos);
-            }
-        });
+                                if (item.get("userId").toString().equals(currentUser.getUid()) && (Boolean) item.get("status") == false) {
+                                    todos.add(todo);
+                                }
+                            }
+                            todosAdapter.setData(todos);
+                        }
+                    });
     }
 
-    private void initViews() {
+    private void initViews(){
         progressBar = getActivity().findViewById(R.id.progressBarHome);
         progressBar.setVisibility(View.GONE);
 
@@ -160,8 +198,11 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         todosAdapter = new TodosAdapter(getLayoutInflater());
         todosAdapter.setListener(this);
         todoRecyclerView.setAdapter(todosAdapter);
+
+        tv_author = getActivity().findViewById(R.id.author);
+        tv_challenge = getActivity().findViewById(R.id.challenge);
     }
-    
+
     // Click to daily habit
     @Override
     public void onClickDailyHabits(final DailyHabit dailyHabit, int position) {
@@ -207,7 +248,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         dailyHabitsAdapter.notifyItemRemoved(position);
         dailyHabitsAdapter.notifyItemRangeChanged(position, dailyHabitsAdapter.getData().size());
     }
-    
+
     // Click to daily task
     @Override
     public void onClickCheckBoxTodos(Todo todo, int position) {
@@ -229,11 +270,11 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         startActivity(intent);
     }
 
-    
+
     // Click Event
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.fabCreateTask:
                 startActivity(new Intent(getContext(), CreateTodoActivity.class));
                 break;

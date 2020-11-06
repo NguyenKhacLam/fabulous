@@ -162,6 +162,15 @@ public class CreateNoteActivity extends AppCompatActivity {
             return;
         }
 
+        if (readyNote != null){
+            updateNote();
+        }else {
+            loadingDialog.startLoadingDialog();
+            uploadImage();
+        }
+    }
+
+    private void uploadImage() {
         final Note note = new Note();
         note.setTitle(inputNoteTittle.getText().toString().trim());
         note.setSubtitle(inputNoteSubTittle.getText().toString().trim());
@@ -174,15 +183,50 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setWeblink(textUrl.getText().toString().trim());
         }
 
-        if (imageNote.getVisibility() == View.VISIBLE) {
-            uploadImage();
-            note.setImageUrl(imgUrl);
-        }
+        if (imageNote.getVisibility() == View.VISIBLE){
+            final StorageReference filePath = storageReference.child("note_images")
+                    .child("my_image_" + Timestamp.now().getSeconds());
 
-        if (readyNote != null){
-            updateNote();
+            filePath.putFile(imageUri)
+                    .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()){
+                                filePath.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        note.setImageUrl(task.getResult().toString());
+                                        db.collection("notes").add(note)
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        if (task.isSuccessful()) {
+                                                            loadingDialog.dismissDialog();
+                                                            Toast.makeText(CreateNoteActivity.this, "Note created!", Toast.LENGTH_SHORT).show();
+                                                            finish();
+                                                        }
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.e("TAG", "onFailure: " + e.getMessage());
+                                                        Toast.makeText(CreateNoteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+                                });
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Fail", "onFailure: " + e.getMessage());
+                            Toast.makeText(CreateNoteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }else {
-            loadingDialog.startLoadingDialog();
             db.collection("notes").add(note)
                     .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
@@ -204,37 +248,14 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadImage() {
-        final StorageReference filePath = storageReference.child("note_images")
-                .child("my_image_" + Timestamp.now().getSeconds());
-
-        filePath.putFile(imageUri)
-                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()){
-                            imgUrl = task.getResult().getUploadSessionUri().toString();
-                            Log.d(TAG, "onComplete: " + imgUrl);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("Fail", "onFailure: " + e.getMessage());
-                        Toast.makeText(CreateNoteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
     private void updateNote(){
         db.collection("notes").document(readyNote.getId()).update(
                 "title", inputNoteTittle.getText().toString().trim(),
                 "subtitle", inputNoteSubTittle.getText().toString().trim(),
                 "content", inputNoteContent.getText().toString().trim(),
                 "color", selectedColor,
-                "weblink", textUrl.getText().toString().trim().equals("") ? null : textUrl.getText().toString().trim(),
                 "imageUrl", imgUrl,
+                "weblink", textUrl.getText().toString().trim().equals("") ? null : textUrl.getText().toString().trim(),
                 "datetime", textDatetime.getText().toString().trim()
         ).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -519,8 +540,8 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         if (readyNote.getImageUrl() != null && !readyNote.getImageUrl().equals("")){
             findViewById(R.id.imgDeleteImage).setVisibility(View.VISIBLE);
-            imageNote.setImageBitmap(BitmapFactory.decodeFile(readyNote.getImageUrl()));
             imgUrl = readyNote.getImageUrl();
+            Glide.with(this).load(readyNote.getImageUrl()).into(imageNote);
             imageNote.setVisibility(View.VISIBLE);
         }
     }

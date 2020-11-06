@@ -1,9 +1,16 @@
 package com.project.fabulous.ui.blog;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintJob;
+import android.print.PrintManager;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,12 +28,15 @@ import com.project.fabulous.R;
 
 import org.w3c.dom.Document;
 
+import java.util.ArrayList;
+
 public class BlogDetailActivity extends AppCompatActivity {
     private static final String TAG = "BlogDetailActivity";
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView tv_response;
     private String postId = "";
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private WebView mWebView ;
 
 
     @Override
@@ -42,6 +52,7 @@ public class BlogDetailActivity extends AppCompatActivity {
     }
 
     private void loadData() {
+        final WebView[] webView = {new WebView(this)};
         db.collection("posts").document(postId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -50,7 +61,8 @@ public class BlogDetailActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot snapshot = task.getResult();
                             collapsingToolbarLayout.setTitle(snapshot.get("title").toString());
-                            tv_response.setText(snapshot.get("content").toString());
+                            webView[0] = mWebView;
+                            webView[0].loadDataWithBaseURL(null, snapshot.get("content").toString(), "text/HTML", "UTF-8", null);
                         }
                     }
                 })
@@ -76,5 +88,6 @@ public class BlogDetailActivity extends AppCompatActivity {
         });
         collapsingToolbarLayout = findViewById(R.id.ctBlog);
         tv_response = findViewById(R.id.tvResponse);
+        mWebView = findViewById(R.id.wvPost);
     }
 }

@@ -5,22 +5,42 @@
             android:id="@+id/navDashboard"
             android:icon="@drawable/ic_dashboard"
             android:title="Dashboard"/>
-        <item
-            android:id="@+id/navNote"
-            android:icon="@drawable/ic_settings"
-            android:title="My Note"/>
+<!--        <item-->
+<!--            android:id="@+id/navNote"-->
+<!--            android:icon="@drawable/ic_settings"-->
+<!--            android:title="My Note"/>-->
         <item
             android:id="@+id/navBlog"
-            android:icon="@drawable/ic_settings"
+            android:icon="@drawable/ic_baseline_person_24"
             android:title="Blogs"/>
-        <item
-            android:id="@+id/navFocusMode"
-            android:icon="@drawable/ic_baseline_center_focus_strong_24"
-            android:title="Focus mode"/>
-        <item
-            android:id="@+id/navAboutApp"
-            android:icon="@drawable/ic_about"
-            android:title="About App"/>
+<!--        <item-->
+<!--            android:id="@+id/navSetting"-->
+<!--            android:icon="@drawable/ic_settings"-->
+<!--            android:title="Setting">-->
+
+<!--        </item>-->
+
+        <item android:title="Setting"
+            android:id="@+id/navSetting">
+            <menu>
+                <item
+                    android:id="@+id/opponent_dummy_item_1"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Import" />
+                <item
+                    android:id="@+id/opponent_dummy_item_2"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Gallery" />
+                <item
+                    android:id="@+id/opponent_dummy_item_3"
+                    android:icon="@drawable/ic_settings"
+                    android:title="Tools" />
+            </menu>
+        </item>
+<!--        <item-->
+<!--            android:id="@+id/navAboutApp"-->
+<!--            android:icon="@drawable/ic_about"-->
+<!--            android:title="About App"/>-->
 
         <item
             android:id="@+id/navRate"
