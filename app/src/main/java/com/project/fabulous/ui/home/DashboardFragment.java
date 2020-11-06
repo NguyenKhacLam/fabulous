@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,11 +25,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
 import com.project.fabulous.api.ApiBuilder;
 import com.project.fabulous.models.DailyHabit;
+import com.project.fabulous.models.Quotes;
 import com.project.fabulous.models.Todo;
 import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
 import com.project.fabulous.ui.todos.CreateTodoActivity;
@@ -53,6 +58,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     private ProgressBar progressBar;
 
     private FloatingActionButton createHabitBtn, createTodoBtn;
+    private TextView tv_author, tv_challenge;
 
     private FirebaseUser currentUser;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -75,6 +81,37 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         progressBar.setVisibility(View.VISIBLE);
         loadDailyHabitData();
         loadTodosData();
+        loadQuotes();
+    }
+
+    private void loadQuotes() {
+        db.collection("quotes")
+                .limit(1)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+//                            Log.d("TAG", "onComplete: size" + task.getResult());
+                            for (QueryDocumentSnapshot snapshot : task.getResult()) {
+//                                Log.d("TAG", "onComplete: " + snapshot.getId());
+                                Quotes quotes = new Quotes();
+                                quotes.setId(snapshot.getId());
+                                quotes.setAuthor(snapshot.get("author").toString());
+                                quotes.setChallenge(snapshot.get("content").toString());
+                                tv_author.setText(quotes.getAuthor());
+                                tv_challenge.setText(quotes.getChallenge());
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("TAG", "onFailure: " + e.getMessage());
+                    }
+                });
+
     }
 
     private void loadDailyHabitData() {
@@ -87,7 +124,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
 
             @Override
             public void onFailure(Call<List<DailyHabit>> call, Throwable t) {
-                Log.e("Error", "onFailure: " + t.getMessage() );
+                Log.e("Error", "onFailure: " + t.getMessage());
             }
         });
     }
@@ -104,7 +141,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
 
             @Override
             public void onFailure(Call<List<Todo>> call, Throwable t) {
-                Log.e("Error", "onFailure: " + t.getMessage() );
+                Log.e("Error", "onFailure: " + t.getMessage());
             }
         });
     }
@@ -129,8 +166,11 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         todosAdapter = new TodosAdapter(getLayoutInflater());
         todosAdapter.setListener(this);
         todoRecyclerView.setAdapter(todosAdapter);
+
+        tv_author = getActivity().findViewById(R.id.author);
+        tv_challenge = getActivity().findViewById(R.id.challenge);
     }
-    
+
     // Click to daily habit
     @Override
     public void onClickDailyHabits(final DailyHabit dailyHabit, int position) {
@@ -176,7 +216,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         dailyHabitsAdapter.notifyItemRemoved(position);
         dailyHabitsAdapter.notifyItemRangeChanged(position, dailyHabitsAdapter.getData().size());
     }
-    
+
     // Click to daily task
     @Override
     public void onClickCheckBoxTodos(Todo todo, int position) {
@@ -198,11 +238,11 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
 //        todoBottomSheetDialogFragment.show(getActivity().getSupportFragmentManager(), "todoBottomSheetDialogFragment");
     }
 
-    
+
     // Click Event
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.fabCreateTask:
                 startActivity(new Intent(getContext(), CreateTodoActivity.class));
                 break;

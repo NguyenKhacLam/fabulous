@@ -6,10 +6,10 @@
         android:title="@string/home"/>
     <item
         android:id="@+id/navJournal"
-        android:icon="@drawable/ic_delivery"
+        android:icon="@drawable/ic_baseline_event_note_24"
         android:title="@string/journal"/>
     <item
         android:id="@+id/navStatistic"
-        android:icon="@drawable/ic_bar_chart"
+        android:icon="@drawable/ic_baseline_alarm_24"
         android:title="@string/statistic"/>
 </menu>
