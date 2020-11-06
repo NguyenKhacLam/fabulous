@@ -22,13 +22,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.DailyHabitsAdapter;
 import com.project.fabulous.adapters.TodosAdapter;
 import com.project.fabulous.api.ApiBuilder;
 import com.project.fabulous.models.DailyHabit;
+import com.project.fabulous.models.SubTask;
 import com.project.fabulous.models.Todo;
 import com.project.fabulous.ui.habit_category.HabitCategoryActivity;
 import com.project.fabulous.ui.todos.CreateTodoActivity;
@@ -71,40 +78,64 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         loadsData();
     }
 
-    private void loadsData() {
-        progressBar.setVisibility(View.VISIBLE);
+    public void loadsData() {
+//        progressBar.setVisibility(View.VISIBLE);
         loadDailyHabitData();
         loadTodosData();
     }
 
-    private void loadDailyHabitData() {
-        ApiBuilder.getInstance().getHabitByUser(currentUser.getUid()).enqueue(new Callback<List<DailyHabit>>() {
-            @Override
-            public void onResponse(Call<List<DailyHabit>> call, Response<List<DailyHabit>> response) {
-                ArrayList<DailyHabit> dailyHabits = (ArrayList<DailyHabit>) response.body();
-                dailyHabitsAdapter.setData(dailyHabits);
-            }
-
-            @Override
-            public void onFailure(Call<List<DailyHabit>> call, Throwable t) {
-                Log.e("Error", "onFailure: " + t.getMessage() );
-            }
-        });
+    public void loadDailyHabitData() {
+        db.collection("user_habit").document(currentUser.getUid())
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                        ArrayList<HashMap<Object, Object>> dailyHabits = (ArrayList<HashMap<Object, Object>>) value.get("habits");
+                        Log.d("TAG", "onEvent: " + dailyHabits);
+                        ArrayList<DailyHabit> habits = new ArrayList<>();
+                        for (int i = 0; i < dailyHabits.size(); i++) {
+                            Gson gson = new Gson();
+                            JsonElement jsonElement = gson.toJsonTree(dailyHabits.get(i));
+                            DailyHabit habit = gson.fromJson(jsonElement, DailyHabit.class);
+                            if (!habit.isTodayStatus()){
+                                habits.add(habit);
+                            }
+                        }
+                        dailyHabitsAdapter.setData(habits);
+                    }
+                });
     }
 
-    private void loadTodosData() {
-        ApiBuilder.getInstance().getTodayTodos().enqueue(new Callback<List<Todo>>() {
+    public void loadTodosData() {
+        db.collection("todos")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onResponse(Call<List<Todo>> call, Response<List<Todo>> response) {
-                ArrayList<Todo> todos = (ArrayList<Todo>) response.body();
-                todosAdapter.setData(todos);
-                progressBar.setVisibility(View.GONE);
-//                Log.d("res", "onResponse: " + response.body());
-            }
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                ArrayList<Todo> todos = new ArrayList<>();
+                for (QueryDocumentSnapshot item : value) {
+                    Todo todo = new Todo();
+                    todo.setId(item.getId());
+                    todo.setTitle(item.get("title").toString());
+                    todo.setDescription(item.get("description").toString());
+                    todo.setStatus((Boolean) item.get("status"));
 
-            @Override
-            public void onFailure(Call<List<Todo>> call, Throwable t) {
-                Log.e("Error", "onFailure: " + t.getMessage() );
+                    // Convert HashMap to ArrayList<SubTask>
+                    ArrayList<HashMap<Object, Object>> subTasksHash = (ArrayList<HashMap<Object, Object>>) item.get("subTasks");
+
+                    ArrayList<SubTask> subTasks = new ArrayList<>();
+                    for (int i = 0; i < subTasksHash.size(); i++) {
+                        Gson gson = new Gson();
+                        JsonElement jsonElement = gson.toJsonTree(subTasksHash.get(i));
+                        SubTask subTask = gson.fromJson(jsonElement, SubTask.class);
+                        subTasks.add(subTask);
+                    }
+
+                    todo.setSubTasks(subTasks);
+
+                    if (item.get("userId").toString().equals(currentUser.getUid()) && (Boolean) item.get("status") == false){
+                        todos.add(todo);
+                    }
+                }
+                todosAdapter.setData(todos);
             }
         });
     }
@@ -188,14 +219,14 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                         Log.d("Tag", "Updated!");
                     }
                 });
-        todo.setStatus(true);
-        todosAdapter.notifyItemChanged(position);
+        Toast.makeText(getContext(), "You've done " + todo.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onClickTodos(Todo todo) {
-//        TodoBottomSheetDialogFragment todoBottomSheetDialogFragment = TodoBottomSheetDialogFragment.newInstance();
-//        todoBottomSheetDialogFragment.show(getActivity().getSupportFragmentManager(), "todoBottomSheetDialogFragment");
+        Intent intent = new Intent(getContext(), CreateTodoActivity.class);
+        intent.putExtra("todo", todo);
+        startActivity(intent);
     }
 
     

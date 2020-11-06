@@ -69,6 +69,7 @@ public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnCli
                             note.setDatetime(document.get("datetime").toString());
                             note.setUserId(document.get("userId").toString());
                             note.setContent(document.get("content").toString());
+                            note.setImageUrl(document.get("imageUrl") != null ? document.get("imageUrl").toString() : "");
                             note.setColor(document.get("color") != null ? document.get("color").toString() : "#ebebeb");
                             note.setWeblink(document.get("weblink") != null ? document.get("weblink").toString() : null);
 
@@ -127,7 +128,7 @@ public class NoteActivity extends AppCompatActivity implements NoteAdapter.OnCli
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        noteAdapter.getFilter().filter(s.toString());
+//        noteAdapter.getFilter().filter(s.toString());
     }
 
     @Override

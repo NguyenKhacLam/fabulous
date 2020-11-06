@@ -101,7 +101,8 @@
             <ImageView
                 android:id="@+id/imgDeleteImage"
                 app:layout_constraintEnd_toEndOf="@id/imageNote"
-                app:layout_constraintBottom_toTopOf="@id/imageNote"
+                app:layout_constraintTop_toTopOf="@id/imageNote"
+                android:layout_margin="10dp"
                 android:visibility="gone"
                 android:src="@drawable/ic_delete"
                 android:padding="5dp"

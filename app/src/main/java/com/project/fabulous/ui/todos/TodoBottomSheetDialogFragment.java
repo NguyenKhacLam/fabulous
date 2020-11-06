@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +17,12 @@ import com.project.fabulous.R;
 
 public class TodoBottomSheetDialogFragment extends BottomSheetDialogFragment implements View.OnClickListener {
     private EditText editText;
-    private Button addButton, cancelBtn;
+    private ImageView addButton;
+    private BottomClick bottomClick;
+
+    public void setBottomClick(BottomClick bottomClick) {
+        this.bottomClick = bottomClick;
+    }
 
     public static TodoBottomSheetDialogFragment newInstance(){
         return new TodoBottomSheetDialogFragment();
@@ -34,10 +40,8 @@ public class TodoBottomSheetDialogFragment extends BottomSheetDialogFragment imp
 
         editText = view.findViewById(R.id.edAddSubtask);
         addButton = view.findViewById(R.id.addSubTaskButton);
-        cancelBtn = view.findViewById(R.id.cancelAddButton);
 
         addButton.setOnClickListener(this);
-        cancelBtn.setOnClickListener(this);
     }
 
     @Override
@@ -48,10 +52,12 @@ public class TodoBottomSheetDialogFragment extends BottomSheetDialogFragment imp
                 if (subTaskTitle.isEmpty()){
                     Toast.makeText(getContext(), "Field can not be null!", Toast.LENGTH_SHORT).show();
                 }
-                break;
-            case R.id.cancelAddButton:
-                dismiss();
+                bottomClick.OnBottomClick(subTaskTitle);
                 break;
         }
+    }
+
+    public interface BottomClick{
+        void OnBottomClick(String title);
     }
 }

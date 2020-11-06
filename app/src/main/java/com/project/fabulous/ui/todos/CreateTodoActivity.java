@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,9 +24,17 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.SubTaskAdapter;
 import com.project.fabulous.models.SubTask;
+import com.project.fabulous.models.Todo;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,34 +44,56 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CreateTodoActivity extends AppCompatActivity implements View.OnClickListener, SubTaskAdapter.OnClickSubTaskListener {
+public class CreateTodoActivity extends AppCompatActivity implements View.OnClickListener, SubTaskAdapter.OnClickSubTaskListener, TodoBottomSheetDialogFragment.BottomClick {
     private Toolbar toolbar;
-    private EditText edTaskName;
+    private EditText edTaskName, edDescription;
     private ImageView setReminderBtn;
     private TextView reminder, addSubTask;
     private RecyclerView recyclerView;
     private SubTaskAdapter adapter;
+    private ArrayList<SubTask> subTasks = new ArrayList<>();
+
+    private AlertDialog dialog;
+    private Todo readyTodo;
+
+    private TodoBottomSheetDialogFragment todoBottomSheetDialogFragment;
+
+    private FirebaseUser currentUser;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_todo);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         setUpToolbar();
         initViews();
+
+        if (getIntent().getSerializableExtra("todo") != null) {
+            readyTodo = (Todo) getIntent().getSerializableExtra("todo");
+            updateOrViewTodo();
+        }
+
         loadData();
+
+    }
+
+    private void updateOrViewTodo() {
+        edTaskName.setText(readyTodo.getTitle());
+        edDescription.setText(readyTodo.getDescription());
+        reminder.setText(readyTodo.getReminder());
+        subTasks = readyTodo.getSubTasks();
     }
 
     private void loadData() {
-        ArrayList<SubTask> subTasks = new ArrayList<>();
-        subTasks.add(new SubTask(1,"subtask 1", false));
-        subTasks.add(new SubTask(2,"subtask 2", false));
-        subTasks.add(new SubTask(3,"subtask 3", true));
         adapter.setData(subTasks);
     }
 
     private void initViews() {
         edTaskName = findViewById(R.id.edTaskName);
+        edDescription = findViewById(R.id.edTaskDescription);
         setReminderBtn = findViewById(R.id.setReminder);
         reminder = findViewById(R.id.reminder);
         addSubTask = findViewById(R.id.addSubTask);
@@ -97,7 +130,7 @@ public class CreateTodoActivity extends AppCompatActivity implements View.OnClic
                 finish();
                 break;
             case R.id.navCreateTodo:
-                Toast.makeText(this, "Created", Toast.LENGTH_SHORT).show();
+                saveTodo();
                 break;
         }
         return true;
@@ -110,7 +143,8 @@ public class CreateTodoActivity extends AppCompatActivity implements View.OnClic
                 showDateTimePickerDialog();
                 break;
             case R.id.addSubTask:
-                TodoBottomSheetDialogFragment todoBottomSheetDialogFragment = TodoBottomSheetDialogFragment.newInstance();
+                todoBottomSheetDialogFragment = TodoBottomSheetDialogFragment.newInstance();
+                todoBottomSheetDialogFragment.setBottomClick(this);
                 todoBottomSheetDialogFragment.show(getSupportFragmentManager(), "todoBottomSheetDialogFragment");
                 break;
         }
@@ -153,12 +187,91 @@ public class CreateTodoActivity extends AppCompatActivity implements View.OnClic
         new DatePickerDialog(CreateTodoActivity.this, dateSetListener, calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH)).show();
     }
 
+    private void saveTodo(){
+        if (edTaskName.getText().toString().equals("")){
+            Toast.makeText(this, "Field can not be null!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Todo newTodo = new Todo();
+        newTodo.setTitle(edTaskName.getText().toString().trim());
+        newTodo.setReminder(reminder.getText().toString().trim());
+        newTodo.setDescription(edDescription.getText().toString().trim());
+        newTodo.setStatus(false);
+        newTodo.setCreatedAt(new Date().toString());
+        newTodo.setUserId(currentUser.getUid());
+        newTodo.setSubTasks(subTasks);
+
+        if (readyTodo == null){
+            db.collection("todos").add(newTodo)
+                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task) {
+                            Toast.makeText(CreateTodoActivity.this, "Todo created!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("TAG", "onFailure: " + e.getMessage() );
+                        }
+                    });
+        }else {
+            db.collection("todos").document(readyTodo.getId())
+                    .update(
+                            "title", edTaskName.getText().toString().trim(),
+                            "description", edDescription.getText().toString().trim(),
+                            "reminder", reminder.getText().toString().trim(),
+                            "subTasks", subTasks
+                    )
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(CreateTodoActivity.this, "Updated!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+        }
+    }
 
     // Click to subtask
     @Override
     public void onClickSubTask(SubTask subTask) {
-        Log.d("TAG", "onClickSubTask: b " + subTask.getStatus());
         subTask.setStatus(!subTask.getStatus());
-        Log.d("TAG", "onClickSubTask: a " + subTask.getStatus());
+    }
+
+    @Override
+    public void onLongClickSubTask(SubTask subTask, int position) {
+        Log.d("TAG", "onClick: " + subTasks.size() + "-" + position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to do this?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        subTasks.remove(position);
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                           dialog.dismiss();
+                    }
+                });
+        dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void OnBottomClick(String title) {
+        SubTask subTask = new SubTask();
+        subTask.setId((int) new Date().getTime());
+        subTask.setStatus(false);
+        subTask.setTitle(title);
+        subTasks.add(subTask);
+
+        todoBottomSheetDialogFragment.dismiss();
     }
 }

@@ -1,6 +1,8 @@
 package com.project.fabulous.models;
 
-public class SubTask {
+import java.io.Serializable;
+
+public class SubTask implements Serializable {
     private int id;
     private String title;
     private boolean status;

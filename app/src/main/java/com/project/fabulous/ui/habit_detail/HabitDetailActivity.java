@@ -1,5 +1,6 @@
 package com.project.fabulous.ui.habit_detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.project.fabulous.R;
 import com.project.fabulous.adapters.HaBitDetailAdapter;
 import com.project.fabulous.models.HabitDetail;
+import com.project.fabulous.ui.home.HomeActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +92,10 @@ public class HabitDetailActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(HabitDetailActivity.this, "Habit added!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(HabitDetailActivity.this, HomeActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                         }
                     }
                 })

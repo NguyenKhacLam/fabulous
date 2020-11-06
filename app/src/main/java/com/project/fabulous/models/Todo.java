@@ -3,19 +3,37 @@ package com.project.fabulous.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Todo {
-    @SerializedName("id")
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class Todo implements Serializable {
     private String id;
-    @SerializedName("title")
     private String title;
-    @SerializedName("description")
     private String description;
-    @SerializedName("status")
+    private String reminder;
     private Boolean status;
-    @SerializedName("userId")
     private String userId;
-    @SerializedName("createdAt")
     private String createdAt;
+    private ArrayList<SubTask> subTasks;
+
+    public Todo() {
+    }
+
+    public String getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(String reminder) {
+        this.reminder = reminder;
+    }
+
+    public ArrayList<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void setSubTasks(ArrayList<SubTask> subTasks) {
+        this.subTasks = subTasks;
+    }
 
     public String getId() {
         return id;

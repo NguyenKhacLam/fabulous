@@ -12,6 +12,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
@@ -28,17 +30,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.project.fabulous.R;
 import com.project.fabulous.models.Note;
+import com.project.fabulous.utils.LoadingDialog;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,8 +74,14 @@ public class CreateNoteActivity extends AppCompatActivity {
     private String selectedColor;
     private Note readyNote;
 
+    private LoadingDialog loadingDialog;
+
+    private Uri imageUri;
+    String imgUrl = "";
+
     private FirebaseUser currentUser;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +89,11 @@ public class CreateNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_note);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         selectedColor = "#ebebeb";
+
+        loadingDialog = new LoadingDialog(this);
 
         findViewById(R.id.imgDeleteUrl).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +106,9 @@ public class CreateNoteActivity extends AppCompatActivity {
         findViewById(R.id.imgDeleteImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageNote.setImageURI(null);
                 imageNote.setVisibility(View.GONE);
+                imgUrl = "";
                 findViewById(R.id.imgDeleteImage).setVisibility(View.GONE);
             }
         });
@@ -152,14 +174,21 @@ public class CreateNoteActivity extends AppCompatActivity {
             note.setWeblink(textUrl.getText().toString().trim());
         }
 
+        if (imageNote.getVisibility() == View.VISIBLE) {
+            uploadImage();
+            note.setImageUrl(imgUrl);
+        }
+
         if (readyNote != null){
             updateNote();
         }else {
+            loadingDialog.startLoadingDialog();
             db.collection("notes").add(note)
                     .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentReference> task) {
                             if (task.isSuccessful()) {
+                                loadingDialog.dismissDialog();
                                 Toast.makeText(CreateNoteActivity.this, "Note created!", Toast.LENGTH_SHORT).show();
                                 finish();
                             }
@@ -169,9 +198,33 @@ public class CreateNoteActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.e("TAG", "onFailure: " + e.getMessage());
+                            Toast.makeText(CreateNoteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
+    }
+
+    private void uploadImage() {
+        final StorageReference filePath = storageReference.child("note_images")
+                .child("my_image_" + Timestamp.now().getSeconds());
+
+        filePath.putFile(imageUri)
+                .addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()){
+                            imgUrl = task.getResult().getUploadSessionUri().toString();
+                            Log.d(TAG, "onComplete: " + imgUrl);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("Fail", "onFailure: " + e.getMessage());
+                        Toast.makeText(CreateNoteActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void updateNote(){
@@ -181,6 +234,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                 "content", inputNoteContent.getText().toString().trim(),
                 "color", selectedColor,
                 "weblink", textUrl.getText().toString().trim().equals("") ? null : textUrl.getText().toString().trim(),
+                "imageUrl", imgUrl,
                 "datetime", textDatetime.getText().toString().trim()
         ).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -323,18 +377,13 @@ public class CreateNoteActivity extends AppCompatActivity {
             });
         }
 
-//        layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) !=
-//                PackageManager.PERMISSION_DENIED){
-//                    ActivityCompat.requestPermissions(CreateNoteActivity.this, new String[]{
-//                            Manifest.permission.READ_EXTERNAL_STORAGE
-//                    }, REQUEST_CODE_STORAGE);
-//                }
-//            }
-//        });
+        layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                selectImage();
+            }
+        });
     }
 
     private void setSubtitleIndicator() {
@@ -343,33 +392,32 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void selectImage() {
-//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        if (intent.resolveActivity(getPackageManager()) != null){
-//            startActivityForResult(intent, REQUEST_CODE_IMAGE);
-//        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_CODE_IMAGE);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == REQUEST_CODE_IMAGE && resultCode == RESULT_OK){
-//            if (data != null){
-//                Uri selectedImage = data.getData();
-//                if (selectedImage != null){
-//
-//                }
-//            }
-//        }
-//    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_IMAGE && grantResults.length > 0) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
-            } else {
-                Toast.makeText(this, "Permission denied!", Toast.LENGTH_SHORT).show();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_IMAGE && resultCode == RESULT_OK){
+            if (data != null){
+                imageUri = data.getData();
+
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                    imageNote.setImageBitmap(bitmap);
+                    imageNote.setVisibility(View.VISIBLE);
+
+                    findViewById(R.id.imgDeleteImage).setVisibility(View.VISIBLE);
+
+                    imgUrl = imageUri.getPath();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     }
@@ -467,6 +515,13 @@ public class CreateNoteActivity extends AppCompatActivity {
             findViewById(R.id.imgDeleteUrl).setVisibility(View.VISIBLE);
             textUrl.setText(readyNote.getWeblink());
             layoutUrl.setVisibility(View.VISIBLE);
+        }
+
+        if (readyNote.getImageUrl() != null && !readyNote.getImageUrl().equals("")){
+            findViewById(R.id.imgDeleteImage).setVisibility(View.VISIBLE);
+            imageNote.setImageBitmap(BitmapFactory.decodeFile(readyNote.getImageUrl()));
+            imgUrl = readyNote.getImageUrl();
+            imageNote.setVisibility(View.VISIBLE);
         }
     }
 }

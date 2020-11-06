@@ -99,6 +99,7 @@ public class HabitCategoryActivity extends AppCompatActivity implements HabitCat
     @Override
     public void onClickItem(HabitCategory habitCategory) {
         Intent intent = new Intent(this, ExerciseActivity.class);
+
         intent.putExtra("category", habitCategory.getCategory());
         startActivity(intent);
     }

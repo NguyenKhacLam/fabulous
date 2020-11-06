@@ -55,6 +55,13 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.HolderSu
                     listener.onClickSubTask(subTask);
                 }
             });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    listener.onLongClickSubTask(subTask, position);
+                    return false;
+                }
+            });
         }
     }
 
@@ -62,7 +69,6 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.HolderSu
     public int getItemCount() {
         return data == null ? 0 : data.size();
     }
-
 
     public class HolderSubTask extends RecyclerView.ViewHolder {
         private CheckBox checkBox;
@@ -83,6 +89,7 @@ public class SubTaskAdapter extends RecyclerView.Adapter<SubTaskAdapter.HolderSu
 
     public interface OnClickSubTaskListener {
         void onClickSubTask(SubTask subTask);
+        void onLongClickSubTask(SubTask subTask, int position);
     }
 
 }
