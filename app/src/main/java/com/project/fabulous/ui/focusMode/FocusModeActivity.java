@@ -1,10 +1,12 @@
 package com.project.fabulous.ui.focusMode;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,8 +16,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FocusModeActivity extends AppCompatActivity implements View.OnClickListener {
+public class FocusModeActivity extends Fragment implements View.OnClickListener {
 
     private static final String CHANNEL_ID = "focusing mode";
     private static final String TAG = "FocusModeActivity";
@@ -63,45 +67,59 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
     private Button btnStart, btnStop;
     private CountDownTimer countDownTimer;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_focus_mode);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_focus_mode, container, false);
 
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         initViews();
         createNotificationChannel();
     }
 
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_focus_mode);
+//
+//        initViews();
+//        createNotificationChannel();
+//    }
+
     private void initViews() {
-        setUpActionBar();
-        progressBar = findViewById(R.id.progressBarCircle);
-        btnStart = findViewById(R.id.btnStartFocus);
-        btnStop = findViewById(R.id.btnStopFocus);
-        textViewTime = findViewById(R.id.tvTime);
-        editTextMinute = findViewById(R.id.editTextMinute);
+//        setUpActionBar();
+        progressBar = getActivity().findViewById(R.id.progressBarCircle);
+        btnStart = getActivity().findViewById(R.id.btnStartFocus);
+        btnStop = getActivity().findViewById(R.id.btnStopFocus);
+        textViewTime = getActivity().findViewById(R.id.tvTime);
+        editTextMinute = getActivity().findViewById(R.id.editTextMinute);
 
         btnStart.setOnClickListener(this);
         btnStop.setOnClickListener(this);
     }
 
-    private void setUpActionBar() {
-        toolbar = findViewById(R.id.focusToolbar);
-        toolbar.setTitle("Focus mode");
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
-    }
+//    private void setUpActionBar() {
+//        toolbar = getActivity().findViewById(R.id.focusToolbar);
+//        toolbar.setTitle("Focus mode");
+//        setSupportActionBar(toolbar);
+//        if (getSupportActionBar() != null){
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        }
+//    }
 
-    private void setUpNotification(){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+    private void setUpNotification() {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity(), CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_logo)
                 .setContentTitle("Finished...!")
                 .setContentText("Your focusing time have finished!")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getActivity());
 
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(0, builder.build());
@@ -118,16 +136,16 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            NotificationManager notificationManager = getActivity().getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                getActivity().finish();
                 break;
         }
 
@@ -136,7 +154,7 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnStartFocus:
                 start();
                 break;
@@ -147,7 +165,7 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void start() {
-        if (timerStatus == TimerStatus.STOPPED){
+        if (timerStatus == TimerStatus.STOPPED) {
             // call to initialize the timer values
             setTimerValue();
             // call to initialize the progress bar values
@@ -159,7 +177,7 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
             // changing the timer status to started
             timerStatus = TimerStatus.STARTED;
             startCountdownTimer();
-        }else {
+        } else {
             btnStop.setVisibility(View.GONE);
             btnStart.setVisibility(View.VISIBLE);
             editTextMinute.setEnabled(true);
@@ -180,13 +198,13 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
 
     private void setTimerValue() {
         int time = 0;
-        if (!editTextMinute.getText().toString().trim().isEmpty()){
+        if (!editTextMinute.getText().toString().trim().isEmpty()) {
             time = Integer.parseInt(editTextMinute.getText().toString().trim());
-        }else {
-            Toast.makeText(getApplicationContext(), getString(R.string.message_minutes), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), getString(R.string.message_minutes), Toast.LENGTH_LONG).show();
         }
 
-        timeCountInMillis = time * 60 *1000;
+        timeCountInMillis = time * 60 * 1000;
     }
 
     /**
@@ -201,11 +219,11 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
      * method to start count down timer
      */
     private void startCountdownTimer() {
-        countDownTimer = new CountDownTimer(timeCountInMillis,1000) {
+        countDownTimer = new CountDownTimer(timeCountInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 textViewTime.setText(DateTimeFormater.hmsTimeFormatter(millisUntilFinished));
-                progressBar.setProgress((int) millisUntilFinished / 1000 );
+                progressBar.setProgress((int) millisUntilFinished / 1000);
             }
 
             @Override
@@ -224,10 +242,11 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
         }.start();
         countDownTimer.start();
     }
+
     /**
      * method to add data to db when it's done
      */
-    private void createFocusSessionInDb(){
+    private void createFocusSessionInDb() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userId = currentUser.getUid();
         int duration = Integer.parseInt(editTextMinute.getText().toString());
@@ -266,9 +285,9 @@ public class FocusModeActivity extends AppCompatActivity implements View.OnClick
     /**
      * method to play sound when finish
      */
-    private void playSound(){
-        if (player == null){
-            player = MediaPlayer.create(this, R.raw.alarm);
+    private void playSound() {
+        if (player == null) {
+            player = MediaPlayer.create(getActivity(), R.raw.alarm);
         }
         player.start();
     }

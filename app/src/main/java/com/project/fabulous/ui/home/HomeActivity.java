@@ -54,6 +54,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private JournalActivity journalActivity = new JournalActivity();
     private StatisticActivity statisticActivity = new StatisticActivity();
     private Configuration configuration;
+    private FocusModeActivity focusModeActivity = new FocusModeActivity();
+    private NoteActivity noteActivity = new NoteActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +149,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return statisticActivity;
     }
 
+    public FocusModeActivity getFocusModeActivity() {
+        return focusModeActivity;
+    }
+
+    public NoteActivity getNoteActivity() {
+        return noteActivity;
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -180,12 +190,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 showFragment(dashboardFragment);
                 break;
             case R.id.navJournal:
-//                showFragment(journalActivity);
-                startActivity(new Intent(this,NoteActivity.class));
+                showFragment(noteActivity);
+//                startActivity(new Intent(this, NoteActivity.class));
                 break;
             case R.id.navStatistic:
-                startActivity(new Intent(this, FocusModeActivity.class));
-//                showFragment(statisticActivity);
+//                startActivity(new Intent(this, FocusModeActivity.class));
+                showFragment(focusModeActivity);
                 break;
 
         }
