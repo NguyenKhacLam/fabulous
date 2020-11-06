@@ -3,7 +3,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorWhite"
     android:paddingTop="?attr/actionBarSize"
     android:paddingEnd="10dp">
 
@@ -50,7 +50,7 @@
             android:maxLines="1"
             android:minEms="5"
             android:text="1"
-            android:textColor="@color/colorYellow"
+            android:textColor="@color/colorPrimaryDark"
             android:textColorHint="@color/colorYellow" />
 
 
@@ -62,7 +62,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="30dp"
             android:text="00:01:00"
-            android:textColor="@color/colorYellow"
+            android:textColor="@color/colorPrimaryDark"
             android:textSize="40sp" />
 
         <Button
@@ -72,7 +72,7 @@
             android:layout_below="@+id/tvTime"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="30dp"
-            android:background="@color/colorYellow"
+            android:background="@color/colorPrimaryDark"
             android:padding="10dp"
             android:text="@string/start_focusing"
             android:textColor="@color/colorWhite" />

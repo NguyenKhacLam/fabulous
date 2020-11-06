@@ -135,7 +135,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
 
@@ -148,7 +148,6 @@ public class CreateNoteActivity extends AppCompatActivity {
 
         if (getIntent().getBooleanExtra("isViewOrUpdate", false)) {
             readyNote = (Note) getIntent().getSerializableExtra("note");
-            Log.d("TAG", "initViews: " + readyNote.getContent());
             setViewOrUpdateNote();
         }
     }

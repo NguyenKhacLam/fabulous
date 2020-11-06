@@ -50,7 +50,6 @@ public class NoteActivity extends Fragment implements NoteAdapter.OnClickNoteLis
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.activity_note, container, false);
-
     }
 
     @Override
