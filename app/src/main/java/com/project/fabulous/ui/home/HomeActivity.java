@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -52,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private HabitCategoryActivity habitCategoryActivity = new HabitCategoryActivity();
     private JournalActivity journalActivity = new JournalActivity();
     private StatisticActivity statisticActivity = new StatisticActivity();
+    private Configuration configuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        toolbar.setTitle("Home");
+        toolbar.setTitle("");
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorBlack));
 
         setSupportActionBar(toolbar);
@@ -162,29 +164,44 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 //                showFragment(blogFragment);
                 startActivity(new Intent(this, BlogActivity.class));
                 break;
-            case R.id.navNote:
+//            case R.id.navNote:
 //                showFragment(blogFragment);
-                startActivity(new Intent(this, NoteActivity.class));
-                break;
-            case R.id.navAboutApp:
-                showFragment(aboutAppFragment);
-                break;
-            case R.id.navFocusMode:
-                startActivity(new Intent(this, FocusModeActivity.class));
+//                startActivity(new Intent(this, NoteActivity.class));
+//                break;
+//            case R.id.navAboutApp:
+//                showFragment(aboutAppFragment);
+//                break;
+            case R.id.navSetting:
+//                startActivity(new Intent(this, FocusModeActivity.class));
+
                 break;
             case R.id.navHome:
 //                startActivity(new Intent(this, HomeActivity.class));
                 showFragment(dashboardFragment);
                 break;
             case R.id.navJournal:
-                showFragment(journalActivity);
+//                showFragment(journalActivity);
+                startActivity(new Intent(this,NoteActivity.class));
                 break;
             case R.id.navStatistic:
-//                startActivity(new Intent(this, StatisticActivity.class));
-                showFragment(statisticActivity);
+                startActivity(new Intent(this, FocusModeActivity.class));
+//                showFragment(statisticActivity);
                 break;
 
         }
         return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        int currentNightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                // Night mode is not active, we're using the light theme
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                // Night mode is active, we're using dark theme
+                break;
+        }
     }
 }

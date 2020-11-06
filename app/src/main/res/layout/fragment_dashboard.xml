@@ -1,121 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="?attr/actionBarSize"
-    android:layout_marginEnd="10dp"
-    android:layout_marginStart="10dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:paddingTop="?attr/actionBarSize">
 
     <ProgressBar
         android:id="@+id/progressBarHome"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
     <ScrollView
-        android:paddingBottom="70dp"
-        android:scrollbars="none"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="70dp"
+        android:scrollbars="none">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <androidx.cardview.widget.CardView
-                android:layout_marginTop="16dp"
                 android:id="@+id/cardChallenge"
-                app:cardCornerRadius="15dp"
-                app:cardElevation="15dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="15dp">
+
                 <LinearLayout
-                    android:background="@color/colorYellow"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <RelativeLayout
-                        android:padding="20dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorYellow"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/llQuotes"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="20dp"
+                        android:paddingRight="100dp"
+                        android:paddingBottom="20dp">
+
                         <TextView
                             android:id="@+id/challenge"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="20sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:scrollHorizontally="false"
                             android:text="21 days challenge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:fontFamily="@font/bad_script"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="15sp" />
+
                         <TextView
+                            android:id="@+id/author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_below="@+id/challenge"
-                            android:id="@+id/tvDayLeft"
-                            android:text="10"
-                            android:layout_marginTop="16dp"
+                            android:fontFamily="@font/bad_script"
+                            android:text="21 days challenge"
                             android:textColor="@color/colorWhite"
-                            android:textSize="60dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                        <TextView
-                            android:layout_toEndOf="@+id/tvDayLeft"
-                            android:layout_below="@id/challenge"
-                            android:text="days \nleft"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginStart="16dp"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="30dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </RelativeLayout>
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
                     <ImageView
-                        android:src="@drawable/tree"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"/>
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="-100dp"
+                        android:layout_toRightOf="@id/llQuotes"
+                        android:src="@drawable/tree" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:id="@+id/dailyHabit"
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/cardChallenge"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cardChallenge"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
                 <TextView
-                    android:text="Daily habits"
                     style="@style/HeadLineTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="Daily habits" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcDailyHabit"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </LinearLayout>
+
             <LinearLayout
-                android:layout_marginTop="16dp"
-                android:layout_below="@id/dailyHabit"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/dailyHabit"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
                 <TextView
-                    android:text="Tasks"
                     style="@style/HeadLineTitle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="Tasks" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcTodos"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 
     <include
         layout="@layout/inc_home_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content" />
+        android:layout_marginBottom="50dp" />
 </RelativeLayout>
