@@ -58,10 +58,11 @@ public class DailyHabitsAdapter extends RecyclerView.Adapter<DailyHabitsAdapter.
                     listener.onClickDailyHabits(dailyHabit, position);
                 }
             });
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View view) {
-                    listener.onClickDailyHabits(dailyHabit, position);
+                public boolean onLongClick(View v) {
+                    listener.onLongClickDailyHabits(dailyHabit, position);
+                    return false;
                 }
             });
         }
@@ -87,6 +88,7 @@ public class DailyHabitsAdapter extends RecyclerView.Adapter<DailyHabitsAdapter.
 
     public interface OnClickDailyHabitsListener {
         void onClickDailyHabits(DailyHabit dailyHabit, int position);
+        void onLongClickDailyHabits(DailyHabit dailyHabit, int position);
     }
 
 }

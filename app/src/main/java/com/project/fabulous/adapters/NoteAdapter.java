@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.project.fabulous.models.Note;
 import com.project.fabulous.R;
 
@@ -108,12 +109,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.HolderNote> {
     public class HolderNote extends RecyclerView.ViewHolder {
         private TextView title, subtitle, date;
         private LinearLayout layoutNote;
+        private ImageView imageView;
+
         public HolderNote(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.textTitle);
             subtitle = itemView.findViewById(R.id.textSubTitle);
             date = itemView.findViewById(R.id.textDatetime);
             layoutNote = itemView.findViewById(R.id.layoutNote);
+            imageView = itemView.findViewById(R.id.imgNoteCard);
         }
 
         private void bindView(Note note) {
@@ -124,6 +128,11 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.HolderNote> {
                 subtitle.setText(note.getSubtitle());
             }
             date.setText(note.getDatetime());
+
+            if (note.getImageUrl() != null && !note.getImageUrl().isEmpty()){
+                imageView.setVisibility(View.VISIBLE);
+                Glide.with(imageView).load(note.getImageUrl()).into(imageView);
+            }
 
             GradientDrawable gradientDrawable = (GradientDrawable) layoutNote.getBackground();
             if (note.getColor() != null){

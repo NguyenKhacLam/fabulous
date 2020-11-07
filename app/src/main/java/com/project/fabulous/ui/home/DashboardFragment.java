@@ -1,5 +1,7 @@
 package com.project.fabulous.ui.home;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -68,6 +70,8 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
     private FloatingActionButton createHabitBtn, createTodoBtn;
     private TextView tv_author, tv_challenge;
 
+    private AlertDialog dialog;
+
     private FirebaseUser currentUser;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -100,9 +104,7 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-//                            Log.d("TAG", "onComplete: size" + task.getResult());
                             for (QueryDocumentSnapshot snapshot : task.getResult()) {
-                                Log.d("TAG", "onComplete: " + snapshot.getId());
                                 Quotes quotes = new Quotes();
                                 quotes.setId(snapshot.getId());
                                 quotes.setAuthor(snapshot.get("author").toString());
@@ -128,8 +130,11 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
                         ArrayList<HashMap<Object, Object>> dailyHabits = (ArrayList<HashMap<Object, Object>>) value.get("habits");
-                        Log.d("TAG", "onEvent: " + dailyHabits);
                         ArrayList<DailyHabit> habits = new ArrayList<>();
+                        if (!value.exists()){
+                            ArrayList<DailyHabit> dailyHabits1 = new ArrayList<>();
+                            db.collection("user_habit").document(currentUser.getUid()).update("habits",dailyHabits1);
+                        }
                         for (int i = 0; i < dailyHabits.size(); i++) {
                             Gson gson = new Gson();
                             JsonElement jsonElement = gson.toJsonTree(dailyHabits.get(i));
@@ -247,6 +252,39 @@ public class DashboardFragment extends Fragment implements DailyHabitsAdapter.On
         dailyHabitsAdapter.getData().remove(position);
         dailyHabitsAdapter.notifyItemRemoved(position);
         dailyHabitsAdapter.notifyItemRangeChanged(position, dailyHabitsAdapter.getData().size());
+    }
+
+    @Override
+    public void onLongClickDailyHabits(DailyHabit dailyHabit, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Are you sure you want to quit this habit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dailyHabitsAdapter.getData().remove(position);
+                        dailyHabitsAdapter.notifyDataSetChanged();
+
+                        HashMap<String, Object> dailyHabitNeedDelete = new HashMap<>();
+                        dailyHabitNeedDelete.put("name", dailyHabit.getName());
+                        dailyHabitNeedDelete.put("todayStatus", dailyHabit.isTodayStatus());
+                        db.collection("user_habit").document(currentUser.getUid())
+                                .update("habits", FieldValue.arrayRemove(dailyHabitNeedDelete))
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Toast.makeText(getContext(), "You've quit " + dailyHabit.getName(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        dialog = builder.create();
+        dialog.show();
     }
 
     // Click to daily task

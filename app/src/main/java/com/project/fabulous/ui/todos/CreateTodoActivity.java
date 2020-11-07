@@ -243,7 +243,6 @@ public class CreateTodoActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onLongClickSubTask(SubTask subTask, int position) {
-        Log.d("TAG", "onClick: " + subTasks.size() + "-" + position);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to do this?")
